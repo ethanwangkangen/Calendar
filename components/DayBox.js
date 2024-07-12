@@ -3,8 +3,10 @@ import { View, ScrollView, Text, StyleSheet,  TouchableOpacity} from 'react-nati
 import styles from '../Styles.js';
 import DayModal from './DayModal.js';
 
-// Custom DayBox Component
-const DayBox = ({ dayNum }) => {
+// The small day box that shows date, M for monday, and summary of the notes and events.
+// Used in detailsScreen
+
+const DayBox = ({ dayNum, dayOfWeek }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModalVisibility = () => {
@@ -20,8 +22,9 @@ const DayBox = ({ dayNum }) => {
   return (
     <TouchableOpacity style = {styles.dayBox} onPress={toggleModalVisibility} activeOpacity={1}>
 
-      <View style = {{flexDirection:"row", borderColor: "red", borderWidth: 1, alignSelf:'flex-start'}}>
-        <Text>{dayNum}</Text>
+      <View style = {{flexDirection:"row", width: "100%", }}>
+        <View style = {{flex: 2, justifyContent: 'center'}} ><Text>{dayNum}</Text></View>
+        <View style = {{flex: 1, justifyContent: 'flex-end',}}><Text>{dayOfWeek}</Text></View>
       </View>
 
       <View style = {{borderColor: "green", borderWidth: 1, alignSelf:'flex-start', width: "100%"}}>

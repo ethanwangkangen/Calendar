@@ -2,13 +2,14 @@ import React, {useState} from 'react';
 import { View, ScrollView, Text, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, TextInput  } from 'react-native';
 import styles from '../Styles.js';
 
+// Modal that pops up when clicking on a dayBox.
+// This constitutes the whole screen, even the top transparent portion
 
 const DayModal = ({notes, events, visible, onRequestClose, onNotesChange }) => {
-    // This constitutes the whole screen, even the top transparent portion
-
+    
     const [localNotes, setLocalNotes] = useState(notes);
     const handleSave = () => {
-        onNotesChange(localNotes); // Pass the updated notes back to the parent
+        onNotesChange(localNotes); // Pass the updated notes back to the parent (which is DayBox)
         onRequestClose();
       };
 
@@ -21,7 +22,7 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange }) => {
         
             <View style={styles.modalOverlay}>
                 
-                // Top transparent portion. Click here to exit modal
+                {/* Top transparent portion. Click here to exit modal */}
                 <TouchableWithoutFeedback onPress={handleSave} style = {{height: '18%'}}>
                     <View style={styles.modalTop}>
                         <Text style={{ color: 'white' }}>Blue View</Text>

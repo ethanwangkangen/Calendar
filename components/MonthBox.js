@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import styles from '../Styles.js';
 
-// Custom MonthBox Component
+// Box that displays the Month, eg "July". Used in detailsScreen
 const MonthBox = ({ month }) => {
   return (
     <View style = {styles.monthBox}>

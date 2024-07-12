@@ -9,8 +9,7 @@ const styles = StyleSheet.create({
     justifyContent: 'start', // Start from the top and work down.
     alignItems: 'center', // Horizontal alignment is centered
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderColor: "orange",
+    borderColor: "black",
   },
 
   monthBox: {
@@ -26,8 +25,6 @@ const styles = StyleSheet.create({
 
   monthScrollView: {
     flexGrow: 1,
-    borderWidth: 10, 
-    borderColor: 'red', 
     width: '100%',
   }, 
 
@@ -39,16 +36,12 @@ const styles = StyleSheet.create({
   
   modalOverlay: {
     animationType: "slide",
-    color: "blue",
-    borderWidth:10,
-    borderColor: "black"
   },
 
   modalTop: {
     // Transparent top to click off the modal.
     width: "100%",
-    height: "18%",
-    borderWidth: 1, 
+    height: "20%",
     transparent: "true"
   },
 
@@ -67,10 +60,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
   },
+
   modalText: {
     textAlign: 'center',
   },
 
+  loginPage: {
+    width: "100%",
+    height: "100%",
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  emailBox: {
+    width: '100%',
+    height: 40,
+    borderRadius: 10, // Rounded corners
+    borderWidth: 2, // Border width
+    borderColor: '#000', // Black border color
+    alignItems: 'center', // Horizontally centered
+    justifyContent: 'center', // Vertical distribution
+  }
+
 });
 
 export default styles;
+

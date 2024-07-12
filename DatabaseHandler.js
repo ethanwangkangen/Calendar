@@ -1,19 +1,20 @@
 import * as SQLite from 'expo-sqlite';
 
-// Open the database, creating it if it doesn't exist
-const db = SQLite.openDatabase('calendar.db');
-
 // Function to create tables
-export const createTables = () => {
-  db.transaction(tx => {
-    tx.executeSql(
+const createTables = async () => {
+
+  try{
+      // Open the database, creating it if it doesn't exist
+      const db = await SQLite.openDatabaseAsync('calendarDatabase.db');
+      // Execute SQL queries to create tables
+      await db.runAsync(
       `CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         email TEXT UNIQUE
       );`
     );
-    tx.executeSql(
+    await db.runAsync(
       `CREATE TABLE IF NOT EXISTS days (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -22,7 +23,7 @@ export const createTables = () => {
         UNIQUE(user_id, date)
       );`
     );
-    tx.executeSql(
+    await db.runAsync(
       `CREATE TABLE IF NOT EXISTS events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         day_id INTEGER,
@@ -33,7 +34,7 @@ export const createTables = () => {
         FOREIGN KEY (day_id) REFERENCES days(id)
       );`
     );
-    tx.executeSql(
+    await db.runAsync(
       `CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         day_id INTEGER,
@@ -41,5 +42,13 @@ export const createTables = () => {
         FOREIGN KEY (day_id) REFERENCES days(id)
       );`
     );
-  });
+    console.log("done creating tables");
+    
+  } catch (error) {
+    console.error('Error creating tables:', error);
+  }
+  
 };
+
+
+export { createTables };
