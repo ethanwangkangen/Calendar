@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, ScrollView, Text, StyleSheet, Modal, TouchableOpacity, TouchableWithoutFeedback, TextInput  } from 'react-native';
 import styles from '../Styles.js';
 
@@ -8,6 +8,9 @@ import styles from '../Styles.js';
 const DayModal = ({notes, events, visible, onRequestClose, onNotesChange }) => {
     
     const [localNotes, setLocalNotes] = useState(notes);
+    useEffect(() => {
+        setLocalNotes(notes);
+      }, [notes]);
     const handleSave = () => {
         onNotesChange(localNotes); // Pass the updated notes back to the parent (which is DayBox)
         onRequestClose();
@@ -31,13 +34,23 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange }) => {
             
 
                 <View style = {styles.touchableArea}> 
-                    <ScrollView style = {{width: "100%"}}>
-                    <TextInput 
-                        style={styles.modalText} 
-                        value={localNotes} 
-                        onChangeText={setLocalNotes} 
-                        />
+                    <ScrollView style = {{backgroundColor: "white", width: "100%", borderColor: "black", borderWidth: 1}}>
+                        <Text> Events </Text>
+                        <TextInput 
+                            style={styles.modalText} 
+                            value={events} 
+                            //onChangeText
+                            />                    
                     </ScrollView>
+
+                    <ScrollView style = {{flex: 2, backgroundColor: "white", width: "100%", borderColor: "black", borderWidth: 1}}>
+                        <Text> Notes</Text>
+                        <TextInput 
+                            style={styles.modalText} 
+                            value={localNotes} 
+                            onChangeText={setLocalNotes} 
+                            />                    
+                    </ScrollView>                    
                 </View>
 
             </View>

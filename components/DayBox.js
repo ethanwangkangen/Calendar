@@ -1,22 +1,35 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, ScrollView, Text, StyleSheet,  TouchableOpacity} from 'react-native';
 import styles from '../Styles.js';
 import DayModal from './DayModal.js';
+import UserContext from '../UserContext.js';
+import {updateNotes} from '../firebaseConfig.js';
+import {formatDate} from '../Utils.js';
+
 
 // The small day box that shows date, M for monday, and summary of the notes and events.
 // Used in detailsScreen
 
-const DayBox = ({ dayNum, dayOfWeek }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const DayBox = ({ dayNum, dayOfWeek, notes, date }) => {
+  const { userState } = useContext(UserContext);
+  const { user, email } = userState;
 
+  const [modalVisible, setModalVisible] = useState(false);
   const toggleModalVisibility = () => {
     setModalVisible(!modalVisible);
   };
 
-  const [notes, setNotes] = useState("notes placeholder");
+  const [localNotes, setLocalNotes] = useState('');
+  
+  useEffect(() => {
+    setLocalNotes(notes);
+  }, [notes]);
 
   const handleNotesChange = (newNotes) => {
-    setNotes(newNotes);
+    if (newNotes != null) {
+      setLocalNotes(newNotes); // local
+      updateNotes(user.uid, formatDate(date), newNotes); // firebase
+    }
   };
 
   return (
@@ -28,7 +41,7 @@ const DayBox = ({ dayNum, dayOfWeek }) => {
       </View>
 
       <View style = {{borderColor: "green", borderWidth: 1, alignSelf:'flex-start', width: "100%"}}>
-        <Text style = {{fontSize: 8,}}>{notes}</Text>
+        <Text style = {{fontSize: 8,}}>{localNotes}</Text>
       </View>
 
       <DayModal

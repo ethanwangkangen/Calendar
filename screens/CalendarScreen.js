@@ -59,7 +59,6 @@ const CalendarScreen = ({route}) => {
         scrollEventThrottle={16}
         contentOffset={{ x: screenWidth, y: 0 }}>
           
-
         <View style={{ width: screenWidth }}>
           <DetailsScreen month={prevMonth} year={prevYear} resetVerticalScroll={setResetVerticalScroll}/>
         </View>

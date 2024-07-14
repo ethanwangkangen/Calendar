@@ -1,39 +1,47 @@
-import React, {useRef, useEffect, useContext} from 'react';
+import React, {useRef, useEffect, useContext, useState} from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import DayBox from '../components/DayBox.js';
 import MonthBox from  '../components/MonthBox.js';
 import styles from '../Styles.js';
-import {monthNumberToName, getDaysInMonth, getDayOfWeek } from '../Utils.js';
+import {formatDate, monthNumberToName, getDaysInMonth, getDayOfWeek } from '../Utils.js';
 import UserContext from '../UserContext.js';
+import {getNotes} from '../firebaseConfig.js';
 
 
 // CalendarScreen shows detailsScreen. Swiping shows the next month's detailsScreen
-const DetailsScreen = ({month, year, resetVerticalScroll }) => {
+const DetailsScreen = ({month, year}) => {
   const scrollViewRef = useRef(null);
+  const { userState } = useContext(UserContext);
+  const { user, email } = userState;
 
-  // setResetVerticalScroll is a setter function passed to from CalendarScreen
-  // While resetVerticalScroll isn't updating a typical state variable, it's leveraging the mechanism of setter 
-  // functions in React to trigger actions based on the current state of your application 
-  // (in this case, the existence of scrollViewRef.current). 
+  const [notes, setNotes] = useState({}); // State to store notes
 
   useEffect(() => {
-    resetVerticalScroll (() => {
-      if (scrollViewRef.current) {
-        scrollViewRef.current.scrollTo({ y: 0, animated: false });
+    // Reset y pos of vertical scroll to the top.
+    if (scrollViewRef.current) {
+          scrollViewRef.current.scrollTo({ y: 0, animated: false });
+        }
+
+    const fetchNotes = async () => {
+      const dayNums = Array.from({ length: getDaysInMonth(year, month) }, (_, i) => i + 1);
+      const notesData = {};
+  
+      for (const dayNum of dayNums) {
+        const date = formatDate(new Date(year, month, dayNum));
+        const dayNotes = await getNotes(user.uid, date);
+        notesData[date] = dayNotes;
       }
-    });
-    // Clean up function (optional)
-    return () => {
-      resetVerticalScroll(null); // Clear the reset function on unmount (if needed)
+  
+      setNotes(notesData);
     };
-  }, [month, year, resetVerticalScroll]); // Listens out for changes in month/year
+
+    fetchNotes();
+
+  }, [month, year]); // Listens out for changes in month/year
   
   const monthName = monthNumberToName(month);
 
   const dayNums = Array.from({ length: getDaysInMonth(year, month) }, (_, i) => i + 1);
-
-  const { userState } = useContext(UserContext);
-  const { user, email } = userState;
 
   return (
       <ScrollView ref={scrollViewRef} style= {styles.monthScrollView}>
@@ -41,7 +49,11 @@ const DetailsScreen = ({month, year, resetVerticalScroll }) => {
 
         <View style = {styles.grid}>
           {dayNums.map(dayNum => (
-            <DayBox key={dayNum} dayNum={dayNum} dayOfWeek={getDayOfWeek(year, month, dayNum)}  />
+            <DayBox key={dayNum} 
+            dayNum={dayNum} 
+            dayOfWeek={getDayOfWeek(year, month, dayNum)}
+            notes={notes[formatDate(new Date(year, month, dayNum))]}
+            date = {new Date(year, month, dayNum)}/>
           ))}
         </View>
 

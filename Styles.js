@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
 
   touchableArea: {
     width: '100%',
-    height: '100%',
+    height: '80%',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: "green",

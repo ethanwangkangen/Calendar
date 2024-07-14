@@ -12,8 +12,6 @@ const Stack = createStackNavigator();
 
 
 const App = () => {
-  useEffect(() => {
-  }, []);
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() +1;
@@ -23,9 +21,9 @@ const App = () => {
       <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen}
+        {/* <Stack.Screen name="Details" component={DetailsScreen}
           initialParams={{month: currentMonth, year: currentYear }
-        } />
+        } /> */}
         <Stack.Screen name="Calendar" component={CalendarScreen}
           initialParams={{month: currentMonth, year: currentYear }
         } />

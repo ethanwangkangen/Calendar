@@ -9,9 +9,8 @@ import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../UserContext.js';
 
 const LoginScreen = ({navigation}) => {
-
-    const [email, setEmail] = useState(email);
-    const [password, setPassword ] = useState(password);
+    const [email, setEmail] = useState("ethanwangkangen@gmail.com");
+    const [password, setPassword ] = useState("ethan20nov");
     const { userState, setUserState } = useContext(UserContext);
 
     const handleLogin = (user, email) => {
@@ -20,7 +19,7 @@ const LoginScreen = ({navigation}) => {
 
     return (
         <View style = {styles.loginPage}>
-
+            
             <View style = {styles.emailBox}>
                 <TextInput value={email} 
                     onChangeText={setEmail}
@@ -45,11 +44,11 @@ const LoginScreen = ({navigation}) => {
             <Button
                 title="Signup"
                 onPress={() => createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
+                    .then(async (userCredential) => {
                         // Signed in 
                         const user = userCredential.user;
-                        handleLogin(user, email);
-                        navigation.navigate('Details');
+                        await handleLogin(user, email);
+                        navigation.navigate('Calendar');
                         // ...
                     })
                     .catch((error) => {
@@ -61,11 +60,11 @@ const LoginScreen = ({navigation}) => {
             <Button
                 title="Login"
                 onPress={() => signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
+                    .then(async (userCredential) => {
                         // Signed in 
                         const user = userCredential.user;
-                        handleLogin(user, email);
-                        navigation.navigate('Details');
+                        await handleLogin(user, email);
+                        navigation.navigate('Calendar');
                         // ...
                     })
                     .catch((error) => {
