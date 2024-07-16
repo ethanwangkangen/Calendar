@@ -36,23 +36,25 @@ const styles = StyleSheet.create({
   
   modalOverlay: {
     animationType: "slide",
+    flex: 1,
+    flexDirection: 'column',
   },
 
   modalTop: {
     // Transparent top to click off the modal.
     width: "100%",
-    height: "20%",
+    height: "25%",
     transparent: "true"
   },
 
   touchableArea: {
+    flex: 1,
+    backgroundColor: 'white',
     width: '100%',
-    height: '80%',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: "green",
-    borderWidth: 10
+    borderColor: "black", 
   },
 
   modalContent: {
@@ -63,7 +65,9 @@ const styles = StyleSheet.create({
   },
 
   modalText: {
-    textAlign: 'center',
+    textAlign: 'left',
+    paddingLeft: 7,
+    
   },
 
   loginPage: {
@@ -81,7 +85,37 @@ const styles = StyleSheet.create({
     borderColor: '#000', // Black border color
     alignItems: 'center', // Horizontally centered
     justifyContent: 'center', // Vertical distribution
+  },
+
+
+  notesScrollView: {
+    paddingTop: 2,
+    backgroundColor: "white", 
+    width: "100%", 
+    borderColor: "black", 
+    borderWidth: 2
+  },
+
+  
+  eventsScrollView: {
+    paddingTop: 2,
+    backgroundColor: "white", 
+    width: "100%", 
+    borderColor: "black", 
+    borderWidth: 2
+    
+
+  },
+
+  eventBox: {
+    width: "80%",
+    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "space-between",
+    
   }
+
+  
 
 });
 

@@ -5,7 +5,7 @@ import MonthBox from  '../components/MonthBox.js';
 import styles from '../Styles.js';
 import {formatDate, monthNumberToName, getDaysInMonth, getDayOfWeek } from '../Utils.js';
 import UserContext from '../UserContext.js';
-import {getNotes} from '../firebaseConfig.js';
+import {getNotes, getEvents} from '../firebaseConfig.js';
 
 
 // CalendarScreen shows detailsScreen. Swiping shows the next month's detailsScreen
@@ -15,6 +15,22 @@ const DetailsScreen = ({month, year}) => {
   const { user, email } = userState;
 
   const [notes, setNotes] = useState({}); // State to store notes
+  const [events, setEvents] = useState({});
+  // events, as retrieved from firebase, is an object. key = eventId, value = event
+
+  const fetchEvents = async () => {
+    const dayNums = Array.from({ length: getDaysInMonth(year, month) }, (_, i) => i + 1);
+    const eventsData = {};
+
+    for (const dayNum of dayNums) {
+      const date = formatDate(new Date(year, month, dayNum));
+      const dayEvents = await getEvents(user.uid, date);
+      console.log("Events " + dayEvents);
+      eventsData[date] = dayEvents;
+    }
+    setEvents(eventsData);
+  };
+
 
   useEffect(() => {
     // Reset y pos of vertical scroll to the top.
@@ -37,6 +53,8 @@ const DetailsScreen = ({month, year}) => {
 
     fetchNotes();
 
+    fetchEvents();
+
   }, [month, year]); // Listens out for changes in month/year
   
   const monthName = monthNumberToName(month);
@@ -53,7 +71,9 @@ const DetailsScreen = ({month, year}) => {
             dayNum={dayNum} 
             dayOfWeek={getDayOfWeek(year, month, dayNum)}
             notes={notes[formatDate(new Date(year, month, dayNum))]}
-            date = {new Date(year, month, dayNum)}/>
+            events = {events[formatDate(new Date(year, month, dayNum))]}
+            date = {new Date(year, month, dayNum)}
+            updateEvents = {fetchEvents}/>
           ))}
         </View>
 
