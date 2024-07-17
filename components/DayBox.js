@@ -3,7 +3,7 @@ import { View, ScrollView, Text, StyleSheet,  TouchableOpacity} from 'react-nati
 import styles from '../Styles.js';
 import DayModal from './DayModal.js';
 import UserContext from '../UserContext.js';
-import {updateNotes, addEvent} from '../firebaseConfig.js';
+import {updateNotes, addEvent, updateAllEvents} from '../firebaseConfig.js';
 import {formatDate} from '../Utils.js';
 
 
@@ -33,6 +33,7 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents }) => {
     if (newEvents != null) {
       setLocalEvents(newEvents); // local
       //update firebase events
+      updateAllEvents(user.uid, formatDate(date), newEvents);
     }
   };
 
@@ -43,8 +44,29 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents }) => {
 
   useEffect(() => {
     setLocalNotes(notes);
+    }, [notes]);
+
+  useEffect(() => {
     setLocalEvents(events);
-  }, [notes, events]);
+  }, [events]);
+
+  
+  const MAX_NEWLINES = 3;
+  const MAX_EVENTS_DISPLAY = 5;
+  let EXTRA = 0;
+
+  const truncateNotes = (no, maxNewlines) => {
+      if (no == null) return '';
+      const lines = no.split('\n');
+      if (lines.length > maxNewlines) {
+        return lines.slice(0, maxNewlines).join('\n') + ' ...';
+      } else {
+        EXTRA = 3 - lines.length;
+      }
+      return no;
+  };
+
+
 
   return (
     <TouchableOpacity style = {styles.dayBox} onPress={toggleModalVisibility} activeOpacity={1}>
@@ -55,14 +77,17 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents }) => {
       </View>
 
       <View style = {{padding: 2, alignSelf:'flex-start', width: "100%"}}>
-        <Text style = {{fontSize: 10,}}>{localNotes}</Text>
+        <Text style = {{fontSize: 10,}}>{truncateNotes(localNotes, MAX_NEWLINES)}</Text>
         {localEvents && Object.keys(localEvents).length > 0 ? (
-            Object.keys(localEvents).map(eventId => (
-              <Text key={eventId} style ={{fontSize: 10}}>{localEvents[eventId]}</Text>
-            ))
-           ) : (
-            <Text style ={{fontSize: 10}}>No events available</Text> // Optional: Show a message when there are no events
-  )}
+          Object.keys(localEvents).map((eventId, index) => (
+            // Render only up to a certain number of events, show '...' for excess
+            index < (MAX_EVENTS_DISPLAY + EXTRA) ? (
+                <Text key={eventId} style={{ fontSize: 10 }}> &#8226; {localEvents[eventId]} </Text>
+            ) : index === (MAX_EVENTS_DISPLAY + EXTRA) ? (
+              <Text key="ellipsis" style={{ fontSize: 10 }}> ... </Text>
+            ) : null
+          ))
+        ) : null}
       </View>
 
       <DayModal

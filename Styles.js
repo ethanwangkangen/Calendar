@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   modalText: {
     textAlign: 'left',
     paddingLeft: 7,
+    multiline: true
     
   },
 
@@ -89,6 +90,7 @@ const styles = StyleSheet.create({
 
 
   notesScrollView: {
+    flex: 2,
     paddingTop: 2,
     backgroundColor: "white", 
     width: "100%", 
@@ -98,22 +100,27 @@ const styles = StyleSheet.create({
 
   
   eventsScrollView: {
+    flex: 1,
     paddingTop: 2,
     backgroundColor: "white", 
     width: "100%", 
     borderColor: "black", 
-    borderWidth: 2
-    
-
+    borderWidth: 2,
+  
   },
 
-  eventBox: {
-    width: "80%",
+  eventCreationBox: {
+    width: "90%",
     flexDirection: 'row',
     alignItems: "center",
+    alignContent: "center",
     justifyContent: "space-between",
+    paddingTop: 6,
     
-  }
+  },
+
+
+  
 
   
 
