@@ -31,10 +31,22 @@ const DetailsScreen = ({month, year}) => {
     setEvents(eventsData);
   };
 
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() +1;
+  const currentDay = currentDate.getDate();
+
+  useEffect(() => {
+    if (month == currentMonth) {
+      console.log(currentDay);
+      scrollViewRef.current.scrollTo({ y: currentDay/3 * 60, animated: false });
+    }
+  }, [month])
 
   useEffect(() => {
     // Reset y pos of vertical scroll to the top.
-    if (scrollViewRef.current) {
+    
+    if (scrollViewRef.current && month!= currentMonth) {
           scrollViewRef.current.scrollTo({ y: 0, animated: false });
         }
 
@@ -62,9 +74,10 @@ const DetailsScreen = ({month, year}) => {
   const dayNums = Array.from({ length: getDaysInMonth(year, month) }, (_, i) => i + 1);
 
   return (
+    <View>
+      <MonthBox month = {monthName}></MonthBox>
       <ScrollView ref={scrollViewRef} style= {styles.monthScrollView}>
-        <MonthBox month = {monthName}></MonthBox>
-
+      
         <View style = {styles.grid}>
           {dayNums.map(dayNum => (
             <DayBox key={dayNum} 
@@ -73,13 +86,14 @@ const DetailsScreen = ({month, year}) => {
             notes={notes[formatDate(new Date(year, month, dayNum))]}
             events = {events[formatDate(new Date(year, month, dayNum))]}
             date = {new Date(year, month, dayNum)}
-            updateEvents = {fetchEvents}/>
+            updateEvents = {fetchEvents}
+            isToday = {new Date(year, month-1, dayNum).toDateString() === new Date().toDateString()}/>
           ))}
         </View>
 
 
       </ScrollView>
-
+      </View>
 
   );
 };

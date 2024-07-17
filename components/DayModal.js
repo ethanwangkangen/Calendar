@@ -73,7 +73,7 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
 
                 <View style = {styles.touchableArea}> 
                     <ScrollView style = {styles.notesScrollView}>
-                        <Text style={styles.modalText} >Notes</Text>
+                    <Text style={[styles.modalText, {alignSelf: 'center'}]}>Notes</Text>
                             <TextInput 
                             style={styles.modalText} 
                             multiline={true}

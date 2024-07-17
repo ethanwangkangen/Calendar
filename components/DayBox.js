@@ -10,7 +10,7 @@ import {formatDate} from '../Utils.js';
 // The small day box that shows date, M for monday, and summary of the notes and events.
 // Used in detailsScreen
 
-const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents }) => {
+const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday }) => {
   const { userState } = useContext(UserContext);
   const { user, email } = userState;
 
@@ -50,6 +50,16 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents }) => {
     setLocalEvents(events);
   }, [events]);
 
+
+  const [isTodayLocal, setIsToday] = useState(isToday);
+
+  useEffect(() => {
+    setIsToday(isToday);
+    if (isToday) {
+      console.log("isToday set to true");
+    }
+  }, [isToday]);
+
   
   const MAX_NEWLINES = 3;
   const MAX_EVENTS_DISPLAY = 5;
@@ -67,13 +77,13 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents }) => {
   };
 
 
-
   return (
-    <TouchableOpacity style = {styles.dayBox} onPress={toggleModalVisibility} activeOpacity={1}>
+    <TouchableOpacity style = {isTodayLocal ? styles.highlightedDayBox:styles.dayBox} onPress={toggleModalVisibility} activeOpacity={1}>
 
       <View style = {{flexDirection:"row", width: "100%", }}>
-        <View style = {{flex: 2, justifyContent: 'center'}} ><Text>{dayNum}</Text></View>
-        <View style = {{flex: 1, justifyContent: 'flex-end',}}><Text>{dayOfWeek}</Text></View>
+        <View style = {{flex: 2, justifyContent: 'center', padding: 2, marginLeft: 2}} ><Text>{dayNum}</Text></View>
+        <View style = {{flex: 1, alignItems: 'flex-end', padding: 2, marginRight: 3}}><Text>{dayOfWeek}</Text></View>
+
       </View>
 
       <View style = {{padding: 2, alignSelf:'flex-start', width: "100%"}}>

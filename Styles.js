@@ -2,14 +2,26 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   dayBox: {
-    width: '33.33%', // 3 columns
+    width: '33.3%', // 3 columns
+    height: 100,
+    aspectRatio: 1, // Makes it a square
+    flexDirection: 'column', // Primary axis is vertical
+    justifyContent: 'start', // Start from the top and work down.
+    alignItems: 'center', // Horizontal alignment is centered
+    borderWidth: .3,
+    borderColor: "black",
+    
+  },
+
+  highlightedDayBox: {
+    width: '33.3%', // 3 columns
     height: 100,
     aspectRatio: 1, // Makes it a square
     flexDirection: 'column', // Primary axis is vertical
     justifyContent: 'start', // Start from the top and work down.
     alignItems: 'center', // Horizontal alignment is centered
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: "red",
   },
 
   monthBox: {
