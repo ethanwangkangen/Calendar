@@ -1,42 +1,43 @@
 export const monthNameToNumber = (monthName) => {
     const months = {
-      January: 1,
-      February: 2,
-      March: 3,
-      April: 4,
-      May: 5,
-      June: 6,
-      July: 7,
-      August: 8,
-      September: 9,
-      October: 10,
-      November: 11,
-      December: 12,
+      January: 0,
+      February: 1,
+      March: 2,
+      April: 3,
+      May: 4,
+      June: 5,
+      July: 6,
+      August: 7,
+      September: 8,
+      October: 9,
+      November: 10,
+      December: 11,
     };
   
     return months[monthName] || null;
   };
 
   export const monthNumberToName = (monthNum) => {
+    // months are 0 indexed
     const months =  {
-      1: "January",
-      2: "February",
-      3: "March",
-      4: "April",
-      5: "May",
-      6: "June",
-      7: "July",
-      8: "August",
-      9: "September",
-      10: "October",
-      11: "November",
-      12 : "December"
+      0: "January",
+      1: "February",
+      2: "March",
+      3: "April",
+      4: "May",
+      5: "June",
+      6: "July",
+      7: "August",
+      8: "September",
+      9: "October",
+      10: "November",
+      11 : "December"
     };
     return months[monthNum] || null;
   }
 
   export const getDayOfWeek = (year, month, day) => {
-    const date = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
+    const date = new Date(year, month, day); // month is 0-indexed in Date constructor
     const dayOfWeek = date.getDay();
     const days = {
       1: "MON",
@@ -70,7 +71,7 @@ export const monthNameToNumber = (monthName) => {
 
   export function formatDate(date) {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const month = String(date.getMonth()).padStart(2, '0'); // Months are 0-indexed
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }

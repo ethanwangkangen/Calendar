@@ -5,6 +5,7 @@ import DayModal from './DayModal.js';
 import UserContext from '../UserContext.js';
 import {updateNotes, addEvent, updateAllEvents} from '../firebaseConfig.js';
 import {formatDate} from '../Utils.js';
+import {parseTimes, formatDetails} from '../chrono.js';
 
 
 // The small day box that shows date, M for monday, and summary of the notes and events.
@@ -38,7 +39,8 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
   };
 
   const handleEventCreation = async (eventDetails) => {
-    addEvent(user.uid, formatDate(date), eventDetails);
+    let arr = parseTimes(eventDetails);
+    addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); //placeholder time
     updateEvents();
   };
 
@@ -55,14 +57,11 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
 
   useEffect(() => {
     setIsToday(isToday);
-    if (isToday) {
-      console.log("isToday set to true");
-    }
   }, [isToday]);
 
   
-  const MAX_NEWLINES = 3;
-  const MAX_EVENTS_DISPLAY = 5;
+  const MAX_NEWLINES = 4;
+  const MAX_EVENTS_DISPLAY = 6;
   let EXTRA = 0;
 
   const truncateNotes = (no, maxNewlines) => {
@@ -87,14 +86,14 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
       </View>
 
       <View style = {{padding: 2, alignSelf:'flex-start', width: "100%"}}>
-        <Text style = {{fontSize: 10,}}>{truncateNotes(localNotes, MAX_NEWLINES)}</Text>
+        <Text style = {{fontSize: 9, margin: -1, marginLeft: 1}}>{truncateNotes(localNotes, MAX_NEWLINES)}</Text>
         {localEvents && Object.keys(localEvents).length > 0 ? (
           Object.keys(localEvents).map((eventId, index) => (
             // Render only up to a certain number of events, show '...' for excess
             index < (MAX_EVENTS_DISPLAY + EXTRA) ? (
-                <Text key={eventId} style={{ fontSize: 10 }}> &#8226; {localEvents[eventId]} </Text>
+                <Text key={eventId} style={{ fontSize: 9, margin: -1 }}> &#8226; {localEvents[eventId].details} </Text>
             ) : index === (MAX_EVENTS_DISPLAY + EXTRA) ? (
-              <Text key="ellipsis" style={{ fontSize: 10 }}> ... </Text>
+              <Text key="ellipsis" style={{ fontSize: 9, margin: -1 }}> ... </Text>
             ) : null
           ))
         ) : null}

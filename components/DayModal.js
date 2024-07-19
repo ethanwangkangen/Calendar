@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, ScrollView, Text, StyleSheet, Modal, TouchableOpacity, Platform, TouchableWithoutFeedback, TextInput, KeyboardAvoidingView, Pressable } from 'react-native';
 import styles from '../Styles.js';
 import EventCreateBox from './EventCreateBox.js';
+import {parseTimes, formatDetails} from '../chrono.js';
 
 // Modal that pops up when clicking on a dayBox.
 // This constitutes the whole screen, even the top transparent portion
@@ -27,10 +28,16 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
       };
 
       const handleEventChange = (eventId, text) => {
-        // Update localEvents with the new text for the given eventId
+        // Update localEvents with the new text for the details of the given eventId
+        const arr = parseTimes(text);
         setLocalEvents(prevEvents => ({
           ...prevEvents,
-          [eventId]: text,
+          [eventId]: {
+            ...prevEvents[eventId],
+            details: formatDetails(text),
+            timeStart: arr[0],
+            timeEnd: arr[1]
+          },
         }));
       };
 
@@ -66,7 +73,6 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
                 {/* Top transparent portion. Click here to exit modal */}
                 <TouchableWithoutFeedback onPress={handleSave} style = {{height: '18%'}}>
                     <View style={styles.modalTop}>
-                        <Text style={{ color: 'white' }}>Blue View</Text>
                     </View>
                 </TouchableWithoutFeedback>
             
@@ -75,7 +81,7 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
                     <ScrollView style = {styles.notesScrollView}>
                     <Text style={[styles.modalText, {alignSelf: 'center'}]}>Notes</Text>
                             <TextInput 
-                            style={styles.modalText} 
+                            style={[styles.modalText, {flexGrow: 1, height: "100%", paddingBottom: 20 }]} 
                             multiline={true}
                             value={localNotes} 
                             onChangeText={setLocalNotes} 
@@ -94,9 +100,10 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
                                     style={styles.eventCreationBox}>
                                     <View style = {{flex: 8, borderColor: "lightgrey", borderWidth: 2, borderRadius: 11, marginRight: 3}}>
                                         <TextInput
-                                            value={localEvents[eventId].toString() }
+                                            value={localEvents[eventId].details.toString() }
                                             onChangeText={text => handleEventChange(eventId, text)}
                                             style = {{padding: 2}}
+                                            
                                             />
                                     </View>
                                     
@@ -115,7 +122,7 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
                             null
                          )}     
 
-                        <EventCreateBox handleEventCreation = {handleEventCreation} handleSave = {handleSave}></EventCreateBox>              
+                        <EventCreateBox handleEventCreation = {handleEventCreation} isFocused = {false}></EventCreateBox>              
 
                     </ScrollView>
                 

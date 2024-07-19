@@ -43,7 +43,8 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom:20
+    marginBottom:20,
+    paddingBottom: 40
   },
   
   modalOverlay: {
@@ -56,6 +57,12 @@ const styles = StyleSheet.create({
     // Transparent top to click off the modal.
     width: "100%",
     height: "25%",
+    transparent: "true"
+  },
+  eventModalTop: {
+    // Transparent top to click off the modal.
+    width: "100%",
+    height: "40%",
     transparent: "true"
   },
 

@@ -1,6 +1,7 @@
 import React, {useContext, useRef, useState } from 'react';
-import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import DayBox from '../components/DayBox.js';
+import DayModal from '../components/DayModal.js';
 import styles from '../Styles.js';
 import {monthNumberToName, getDaysInMonth, getPreviousMonth, getNextMonth } from '../Utils.js';
 import UserContext from '../UserContext.js';
@@ -48,8 +49,7 @@ const CalendarScreen = ({route}) => {
     
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', 
     width: screenWidth, height: "100%"}}>
-
-
+            
       <ScrollView
         ref={scrollViewHorizontalRef}
         horizontal

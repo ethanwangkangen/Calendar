@@ -9,12 +9,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@nlpjs/core": "^4.26.1",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-firebase/app": "^20.1.0",
     "@react-native-firebase/firestore": "^20.1.0",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.4.0",
     "@realm/react": "^0.8.0",
+    "chrono-node": "^2.7.6",
     "expo": "~51.0.17",
     "expo-file-system": "~17.0.1",
     "expo-sqlite": "~14.0.4",
