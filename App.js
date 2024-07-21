@@ -6,6 +6,7 @@ import HomeScreen from './screens/HomeScreen.js';
 import DetailsScreen from './screens/DetailsScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
 import CalendarScreen from './screens/CalendarScreen.js';
+import ExitModal from './components/ExitModal.js';
 import {UserProvider} from './UserContext.js';
 import * as Font from 'expo-font';
 import { auth } from './firebaseConfig.js'; 
@@ -80,6 +81,7 @@ const App = () => {
           initialParams={{month: currentMonth, year: currentYear }
         } />
         <Stack.Screen name = "Signup/Login" component = {LoginScreen} />
+        <Stack.Screen name = "Exit" component = {ExitModal} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

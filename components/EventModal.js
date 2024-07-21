@@ -109,7 +109,7 @@ const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
 
                 <Pressable title = "help"
                           style = {{ width: "20%", backgroundColor: 'lightgrey', borderColor: "black", borderWidth: 2, 
-                            borderRadius: 11, alignSelf: 'center'}}
+                            borderRadius: 11, alignSelf: 'center', marginTop: 9}}
                           onPress = {toggleHelpVisible}>
                             <Text style = {{color: "black", alignSelf: 'center', fontFamily: 'Montserrat-Medium.ttf'}}>{"Help"}</Text>
                 </Pressable>

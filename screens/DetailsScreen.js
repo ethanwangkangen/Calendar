@@ -7,18 +7,17 @@ import {formatDate, monthNumberToName, getDaysInMonth, getDayOfWeek } from '../U
 import UserContext from '../UserContext.js';
 import {getNotes, getEvents} from '../firebaseConfig.js';
 import EventModal from '../components/EventModal.js';
-import {auth} from '../firebaseConfig.js';
+import ExitModal from '../components/ExitModal.js';
+import { auth } from '../firebaseConfig.js'; 
 
 // CalendarScreen shows detailsScreen. Swiping shows the next month's detailsScreen
-const DetailsScreen = ({month, year}) => {
+const DetailsScreen = ({month, year, userProp}) => {
   const scrollViewRef = useRef(null);
-  const { userState } = useContext(UserContext);
-  const user = auth.currentUser;
-
   const [notes, setNotes] = useState({}); // State to store notes
   const [events, setEvents] = useState({});
   // events, as retrieved from firebase, is an object. key = eventId, value = event
 
+  const user = auth.currentUser;
   const [firstRendered, setFirstRendered] = useState(false);
 
   const fetchEvents = async () => {
@@ -81,6 +80,11 @@ const DetailsScreen = ({month, year}) => {
     setEventModalVisible(!eventModalVisible);
   };
 
+  const [quitModalVisible, setQuitModalVisible] = useState(false);
+  const toggleQuitModalVisibility = () => {
+    setQuitModalVisible(!quitModalVisible);
+  };
+
   return (
     <View style = {{backgroundColor:"white"}}>
       <TouchableOpacity
@@ -103,10 +107,29 @@ const DetailsScreen = ({month, year}) => {
         <Text style={{ color: 'black' }}>  +  </Text>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top:1.3,
+          right: 1.2,
+          backgroundColor: 'gainsboro',
+          padding: 9,
+          borderRadius: 8,
+          zIndex: 2,
+          borderColor: "black",
+          borderWidth: 1,
+        }}
+        onPress={() => {
+          // Handle button press
+          setQuitModalVisible(true);
+        }}
+      >
+        <Text style={{ color: 'black' }}>  x  </Text>
+      </TouchableOpacity>
 
       <EventModal visible = {eventModalVisible} onRequestClose = {toggleModalVisibility} refreshEvents = {fetchEvents}></EventModal>
-
-      <MonthBox month = {monthName} s></MonthBox>
+      <ExitModal visible = {quitModalVisible}  onRequestClose = {toggleQuitModalVisibility}></ExitModal>
+      <MonthBox month = {monthName}></MonthBox>
       <ScrollView ref={scrollViewRef} style= {styles.monthScrollView}>
       
         <View style = {styles.grid}>

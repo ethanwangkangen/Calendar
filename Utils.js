@@ -56,15 +56,15 @@ export const monthNameToNumber = (monthName) => {
   };
 
   export const getPreviousMonth = (month, year) => {
-    if (month === 1) {
-      return { prevMonth: 0, prevYear: year - 1 };
+    if (month === 0) {
+      return { prevMonth: 11, prevYear: year - 1 };
     }
     return { prevMonth: month - 1, prevYear: year };
   };
   
   export const getNextMonth = (month, year) => {
-    if (month === 12) {
-      return { nextMonth: 1, nextYear: year + 1 };
+    if (month === 11) {
+      return { nextMonth: 0, nextYear: year + 1 };
     }
     return { nextMonth: month + 1, nextYear: year };
   };
