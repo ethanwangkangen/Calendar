@@ -57,7 +57,7 @@ export const monthNameToNumber = (monthName) => {
 
   export const getPreviousMonth = (month, year) => {
     if (month === 1) {
-      return { prevMonth: 12, prevYear: year - 1 };
+      return { prevMonth: 0, prevYear: year - 1 };
     }
     return { prevMonth: month - 1, prevYear: year };
   };
@@ -75,3 +75,5 @@ export const monthNameToNumber = (monthName) => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
+
+  

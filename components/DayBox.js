@@ -39,9 +39,14 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
   };
 
   const handleEventCreation = async (eventDetails) => {
-    let arr = parseTimes(eventDetails);
-    addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); //placeholder time
-    updateEvents();
+    try {
+      let arr = parseTimes(eventDetails);
+      addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); //placeholder time
+      updateEvents();
+    } catch (error) {
+      console.log(error);
+    }
+    
   };
 
   useEffect(() => {
@@ -75,33 +80,56 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
       return no;
   };
 
+  const truncateEvent = (input) => {
+    max = 18
+    if (input.length > 18) {
+      return input.substring(0, 18) + "..";
+    } 
+    return input;
+  }
+
 
   return (
     <TouchableOpacity style = {isTodayLocal ? styles.highlightedDayBox:styles.dayBox} onPress={toggleModalVisibility} activeOpacity={1}>
 
       <View style = {{flexDirection:"row", width: "100%", }}>
-        <View style = {{flex: 2, justifyContent: 'center', padding: 2, marginLeft: 2}} ><Text>{dayNum}</Text></View>
-        <View style = {{flex: 1, alignItems: 'flex-end', padding: 2, marginRight: 3}}><Text>{dayOfWeek}</Text></View>
+        <View style = {{flex: 2, justifyContent: 'center', padding: 2, marginLeft: 2}} >
+          <Text style = {{fontFamily: 'Montserrat-Bold.ttf'}}>{dayNum}</Text>
+        </View>
+
+        {dayOfWeek == "MON" ? (
+          <View style = {{flex: 1.4, alignItems: 'flex-end', padding: 2, marginRight: 3}}>
+            <Text  style = {{fontFamily: 'Montserrat-Medium.ttf'}}>* {dayOfWeek}</Text>
+          </View>) : 
+
+          (<View style = {{flex: 1, alignItems: 'flex-end', padding: 2, marginRight: 3}}>
+            <Text  style = {{fontFamily: 'Montserrat-Medium.ttf'}}>{dayOfWeek}</Text>
+          </View>)}
+        
 
       </View>
 
       <View style = {{padding: 2, alignSelf:'flex-start', width: "100%"}}>
-        <Text style = {{fontSize: 9, margin: -1, marginLeft: 1}}>{truncateNotes(localNotes, MAX_NEWLINES)}</Text>
+        <Text style = {{fontSize: 9, margin: -1, marginLeft: 1, fontFamily: 'Montserrat-Medium.ttf'}}>{truncateNotes(localNotes, MAX_NEWLINES)}</Text>
+
         {localEvents && Object.keys(localEvents).length > 0 ? (
           Object.keys(localEvents).map((eventId, index) => (
             // Render only up to a certain number of events, show '...' for excess
             index < (MAX_EVENTS_DISPLAY + EXTRA) ? (
-                <Text key={eventId} style={{ fontSize: 9, margin: -1 }}> &#8226; {localEvents[eventId].details} </Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" key={eventId} 
+                style={{ fontSize: 9, margin: -1, fontFamily: 'Montserrat-Medium.ttf'}}> &#8226; {localEvents[eventId].details} </Text>
             ) : index === (MAX_EVENTS_DISPLAY + EXTRA) ? (
               <Text key="ellipsis" style={{ fontSize: 9, margin: -1 }}> ... </Text>
             ) : null
           ))
         ) : null}
+
       </View>
 
       <DayModal
           visible={modalVisible}
           onRequestClose={toggleModalVisibility}
+          date = {date}
           notes = {notes}
           events = {events}
           onNotesChange={handleNotesChange} // Pass the handler to the modal

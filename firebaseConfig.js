@@ -64,7 +64,25 @@ export async function getEvents(userId, date) {
   const dbRef = ref(database);
   return get(child(dbRef, `users/${userId}/calendar/${date}/events`)).then((snapshot) => { // need a return here.
     if (snapshot.exists()) {
-      return snapshot.val(); // This is a callback and isn't returned from getEvents. Therefore need return above.
+      const events = snapshot.val();
+      const eventsArray = Object.entries(events).map(([id, event]) => ({ id, ...event }));
+
+      // Separate events with and without startTime
+      const eventsWithStartTime = eventsArray.filter(event => event.timeStart);
+      const eventsWithoutStartTime = eventsArray.filter(event => !event.timeStart);
+
+      // Client-side sorting of events with startTime (since Firebase returns them sorted by startTime)
+      eventsWithStartTime.sort((a, b) => new Date(a.timeStart) - new Date(b.timeStart));
+
+      // Combine sorted events with and without startTime
+      const sortedEventsArray = [...eventsWithStartTime, ...eventsWithoutStartTime];
+
+      // Convert sorted array back into an object with event IDs as keys
+      const sortedEvents = Object.fromEntries(
+        sortedEventsArray.map(event => [event.id, event])
+      );
+      return sortedEvents;
+
     } else {
 
       return {};

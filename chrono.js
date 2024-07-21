@@ -1,5 +1,5 @@
 import EventCreateBox from './components/EventCreateBox';
-
+import { RRule } from 'rrule';
 const chrono = require('chrono-node');
 
 // for use within event creation inside dayModal
@@ -49,10 +49,10 @@ export function formatDetails(input) {
       endTime = result.end ? formatTime(result.end.date()) : null;
       // Append times to event description if they exist
       if (endTime) {
-        eventDescription = `to ${endTime} ` + eventDescription;
+        eventDescription = `- ${convertTo12HourFormat(endTime)} ` + eventDescription;
       }
       if (startTime) {
-        eventDescription = `${startTime} ` + eventDescription;
+        eventDescription = `${convertTo12HourFormat(startTime)} ` + eventDescription;
       }
   }
     return eventDescription;    
@@ -79,12 +79,11 @@ export function formatDetails(input) {
 
 export function parseSingleEvent(input) {
   // event that spans within a single day
-  // lunch tomorrow 1pm -> ["lunch", <Date> (to be formatted), "1300", null]
-  // practice tomorrow 3 to 5pm -> ["practice", <Date> (to be formatted), "1500", "1700"]
+  // lunch tomorrow 1pm -> ["1pm lunch", <Date> (to be formatted), "1300", null]
+  // practice tomorrow 3 to 5pm -> ["3pm to 5pm practice", <Date> (to be formatted), "1500", "1700"]
   // no date specified (time specified): assumed to be current day (today)
   // no time specified: okay.
   // no date or time specified: fail  
-
 
   const results = chrono.parse(input);
   if (results.length === 0) { // no date specified
@@ -111,18 +110,98 @@ export function parseSingleEvent(input) {
   if (hasExplicitTime) {
     startTime = formatTime(result.start.date());
     endTime = result.end ? formatTime(result.end.date()) : null;
-    
-    // Append times to event description if they exist
-    
+
     if (endTime) {
-      eventDescription = `to ${endTime} ` + eventDescription;
+      eventDescription = `- ${convertTo12HourFormat(endTime)} ` + eventDescription;
     }
 
     if (startTime) {
-      eventDescription = `${startTime} ` + eventDescription;
+      eventDescription = `${convertTo12HourFormat(startTime)} ` + eventDescription;
+    }
+  }
+  return [eventDescription, date, startTime, endTime];
+}
+
+export function getTimeArr(input) {
+  //eg. 1 jul to 2 aug every sat -> [1 jul, 2 aug]
+  const results = chrono.parse(input);
+  if (results.length < 2) {
+    return null; //todo throw error or something
+  }
+  return [results[0].start.date(), results[0].end.date()];
+}
+
+
+//21 jul to 21 aug every Sat -> "Saturday"
+export const extractRecurrenceDay = (input) => {
+  const daysOfWeek = {
+    'Sunday': 'Su',
+    'Monday': 'Mo',
+    'Tuesday': 'Tu',
+    'Wednesday': 'We',
+    'Thursday': 'Th',
+    'Friday': 'Fr',
+    'Saturday': 'Sa'
+  };
+
+  const inputLower = input.toLowerCase();
+  for (const [fullDay, abbreviation] of Object.entries(daysOfWeek)) {
+    const regex = new RegExp(`every\\s+(?:${fullDay}|${abbreviation})`, 'i');
+    if (regex.test(inputLower)) {
+      return fullDay;
     }
   }
 
+  return null;
+};
 
-  return [eventDescription, date, startTime, endTime];
+// Function to map day names to RRule constants
+const mapDayToRRule = (dayName) => {
+  const weekdays = {
+    'Sunday': RRule.SU,
+    'Monday': RRule.MO,
+    'Tuesday': RRule.TU,
+    'Wednesday': RRule.WE,
+    'Thursday': RRule.TH,
+    'Friday': RRule.FR,
+    'Saturday': RRule.SA
+  };
+  return weekdays[dayName];
+};
+
+//return an array of dates that should have the recurring event.
+export function parseRecurringEvents(timeArr, dayName) {
+  //[1 jul, 2 aug], dayName -> [<date>, <date> ...]
+  const recurrenceConstant = mapDayToRRule(dayName);
+  // Create the recurrence rule
+  const recurrenceRule = new RRule({
+    freq: RRule.WEEKLY,
+    byweekday: [recurrenceConstant],
+    dtstart: timeArr[0],
+    until: timeArr[1]
+  });
+
+  // Generate and return all recurring dates
+  const recurringDates = recurrenceRule.all();
+  return recurringDates;
+}
+
+
+
+export function convertTo12HourFormat(time) {
+  // Ensure time is a string and pad with zeros if necessary
+  time = time.toString().padStart(4, '0');
+
+  // Extract hours and minutes from the time
+  let hours = parseInt(time.substring(0, 2));
+  let minutes = time.substring(2);
+
+  // Determine AM/PM
+  let period = hours >= 12 ? 'pm' : 'am';
+
+  // Convert hours from 24-hour to 12-hour format
+  hours = hours % 12 || 12;
+
+  // Format the result
+  return minutes == '00' ? `${hours}${period}`: `${hours}.${minutes}${period}`;
 }

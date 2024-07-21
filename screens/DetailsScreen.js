@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useContext, useState} from 'react';
+import React, {useRef, useEffect, useContext, useState, useLayoutEffect} from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import DayBox from '../components/DayBox.js';
 import MonthBox from  '../components/MonthBox.js';
@@ -18,6 +18,8 @@ const DetailsScreen = ({month, year}) => {
   const [notes, setNotes] = useState({}); // State to store notes
   const [events, setEvents] = useState({});
   // events, as retrieved from firebase, is an object. key = eventId, value = event
+
+  const [firstRendered, setFirstRendered] = useState(false);
 
   const fetchEvents = async () => {
     const dayNums = Array.from({ length: getDaysInMonth(year, month) }, (_, i) => i + 1);
@@ -50,10 +52,15 @@ const DetailsScreen = ({month, year}) => {
   const currentDay = currentDate.getDate();
 
   useEffect(() => {
-    if (month == currentMonth) {
-      scrollViewRef.current.scrollTo({ y: currentDay/3 * 60, animated: false });
-    }
-  }, [month])
+    const timer = setTimeout(() => {
+      if (month === currentMonth && scrollViewRef.current && !firstRendered) {
+        scrollViewRef.current.scrollTo({ y: (currentDay / 3) * 60, animated: false });
+        setFirstRendered(true);
+      }
+    }, 100); // Delay to ensure layout is rendered
+  
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Reset y pos of vertical scroll to the top.
@@ -75,16 +82,16 @@ const DetailsScreen = ({month, year}) => {
   };
 
   return (
-    <View>
+    <View style = {{backgroundColor:"white"}}>
       <TouchableOpacity
         style={{
           position: 'absolute',
-          top:2,
-          left: 2,
-          backgroundColor: 'lightgrey',
+          top:1.3,
+          left: 1.2,
+          backgroundColor: 'gainsboro',
           padding: 9,
           borderRadius: 8,
-          zIndex: 1,
+          zIndex: 2,
           borderColor: "black",
           borderWidth: 1,
         }}
@@ -99,7 +106,7 @@ const DetailsScreen = ({month, year}) => {
 
       <EventModal visible = {eventModalVisible} onRequestClose = {toggleModalVisibility} refreshEvents = {fetchEvents}></EventModal>
 
-      <MonthBox month = {monthName}></MonthBox>
+      <MonthBox month = {monthName} s></MonthBox>
       <ScrollView ref={scrollViewRef} style= {styles.monthScrollView}>
       
         <View style = {styles.grid}>

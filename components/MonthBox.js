@@ -6,7 +6,7 @@ import styles from '../Styles.js';
 const MonthBox = ({ month }) => {
   return (
     <View style = {styles.monthBox}>
-      <Text style = {{fontSize: 30}}>{month}</Text>
+      <Text style = {{fontSize: 30, fontFamily: 'Montserrat-Bold.ttf'}}>{month}</Text>
     </View>
   );
 };

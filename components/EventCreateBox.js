@@ -7,13 +7,13 @@ const EventCreateBox = ({handleEventCreation, isFocused}) => {
   const [eventDetails, setEventDetails] = useState('');
 
   return (
-    <View style={[styles.eventCreationBox, {marginBottom: 50}]}>
+    <View style={[styles.eventCreationBox, {marginBottom: 20}]}>
       <View style = {{flex: 8, borderColor: "black", borderWidth: 2, borderRadius: 11, marginRight: 3}}>
         <TextInput value={eventDetails} 
                   onChangeText={setEventDetails}
-                  placeholder="Create an event:"
+                  placeholder="eg.1-2pm lunch"
                   placeholderTextColor="#888"
-                  style = {{padding: 2}}
+                  style = {{padding: 2, fontFamily: 'Montserrat-Medium.ttf'}}
                   autoFocus = {isFocused}
                   >
                 </TextInput>
@@ -26,7 +26,7 @@ const EventCreateBox = ({handleEventCreation, isFocused}) => {
                 handleEventCreation(eventDetails);
                 setEventDetails('');
               }}>
-          <Text style = {{color: "white", alignSelf: 'center'}}>{"Add"}</Text>
+          <Text style = {{color: "white", alignSelf: 'center', fontFamily: 'Montserrat-Medium.ttf'}}>{"Add"}</Text>
       </Pressable>
 
     </View>

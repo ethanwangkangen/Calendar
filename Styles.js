@@ -2,49 +2,57 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   dayBox: {
-    width: '33.3%', // 3 columns
+    width: '33.06%', // 3 columns
     height: 100,
     aspectRatio: 1, // Makes it a square
     flexDirection: 'column', // Primary axis is vertical
     justifyContent: 'start', // Start from the top and work down.
     alignItems: 'center', // Horizontal alignment is centered
-    borderWidth: .3,
+    borderWidth: .8,
     borderColor: "black",
-    
+    margin: .5,
+    borderRadius: 5,
+    backgroundColor:"white",    
   },
 
   highlightedDayBox: {
-    width: '33.3%', // 3 columns
+    width: '33.06%', // 3 columns
     height: 100,
     aspectRatio: 1, // Makes it a square
     flexDirection: 'column', // Primary axis is vertical
     justifyContent: 'start', // Start from the top and work down.
     alignItems: 'center', // Horizontal alignment is centered
-    borderWidth: 1,
+    borderWidth: .9,
     borderColor: "red",
+    margin: .5,
+    borderRadius: 5,
+    backgroundColor:"white"
   },
 
   monthBox: {
     width: '100%',
     height: 40,
-    borderRadius: 10, // Rounded corners
+    borderRadius: 9, // Rounded corners
     borderWidth: 2, // Border width
     borderColor: '#000', // Black border color
     alignItems: 'center', // Horizontally centered
     justifyContent: 'center', // Vertical distribution
+    backgroundColor:"white"
   }
   ,
 
   monthScrollView: {
     flexGrow: 1,
     width: '100%',
+    backgroundColor:"white"
   }, 
 
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom:20,
-    paddingBottom: 40
+    paddingBottom: 40,
+    backgroundColor:"white"
   },
   
   modalOverlay: {
@@ -62,13 +70,13 @@ const styles = StyleSheet.create({
   eventModalTop: {
     // Transparent top to click off the modal.
     width: "100%",
-    height: "40%",
+    height: "35%",
     transparent: "true"
   },
 
   touchableArea: {
     flex: 1,
-    backgroundColor: 'white',
+    transparent: true,
     width: '100%',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -86,7 +94,8 @@ const styles = StyleSheet.create({
   modalText: {
     textAlign: 'left',
     paddingLeft: 7,
-    multiline: true
+    multiline: true,
+    fontFamily: 'Montserrat-Medium.ttf'
     
   },
 
@@ -98,13 +107,15 @@ const styles = StyleSheet.create({
   },
 
   emailBox: {
-    width: '100%',
+    width: '70%',
     height: 40,
-    borderRadius: 10, // Rounded corners
+    borderRadius: 9, // Rounded corners
     borderWidth: 2, // Border width
     borderColor: '#000', // Black border color
     alignItems: 'center', // Horizontally centered
     justifyContent: 'center', // Vertical distribution
+    padding: 10,
+    margin: 5
   },
 
 
@@ -114,7 +125,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white", 
     width: "100%", 
     borderColor: "black", 
-    borderWidth: 2
+    borderWidth: 2,
+    borderRadius: 9,
+    marginBottom: .5
   },
 
   
@@ -125,6 +138,7 @@ const styles = StyleSheet.create({
     width: "100%", 
     borderColor: "black", 
     borderWidth: 2,
+    borderRadius: 9
   
   },
 

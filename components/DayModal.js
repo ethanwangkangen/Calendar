@@ -7,10 +7,12 @@ import {parseTimes, formatDetails} from '../chrono.js';
 // Modal that pops up when clicking on a dayBox.
 // This constitutes the whole screen, even the top transparent portion
 
-const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEventsChange, handleEventCreation }) => {
+const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEventsChange, handleEventCreation, date }) => {
     
     const [localNotes, setLocalNotes] = useState(notes);
     const [localEvents, setLocalEvents] = useState(events);
+
+    const [tempText, setTempText] = useState({});
 
     useEffect(() => {
         setLocalNotes(notes);
@@ -27,18 +29,28 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
         onRequestClose();
       };
 
-      const handleEventChange = (eventId, text) => {
-        // Update localEvents with the new text for the details of the given eventId
-        const arr = parseTimes(text);
-        setLocalEvents(prevEvents => ({
-          ...prevEvents,
-          [eventId]: {
-            ...prevEvents[eventId],
-            details: formatDetails(text),
-            timeStart: arr[0],
-            timeEnd: arr[1]
-          },
+    const handleTempTextChange = (eventId, text) => {
+        setTempText(prevTempText => ({
+          ...prevTempText,
+          [eventId]: text,
         }));
+      };
+
+    const handleEventChange = (eventId, text) => {
+        const arr = parseTimes(tempText[eventId]);
+        setLocalEvents(prevEvents => {
+          const updatedEvents = {
+            ...prevEvents,
+            [eventId]: {
+              ...prevEvents[eventId],
+              details: formatDetails(tempText[eventId]) || '',
+              timeStart: arr[0] || null,
+              timeEnd: arr[1] || null,
+            },
+          };
+          onEventsChange(updatedEvents); // setLocalEvents is async, so i need to onEventsChange within it if not wont be updated
+          return updatedEvents;
+        });
       };
 
       const deleteEvent = (eventId) => {
@@ -46,6 +58,7 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
         const updatedEvents = { ...localEvents };
         delete updatedEvents[eventId];
         setLocalEvents(updatedEvents);
+        onEventsChange(updatedEvents);
       };
 
       const handleKeyPress = ({ nativeEvent }) => {
@@ -78,8 +91,15 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
             
 
                 <View style = {styles.touchableArea}> 
+                    <View style = {{borderColor: "black", borderWidth: 2, width: "35%", 
+                        alignItems: "center", borderRadius: 9, backgroundColor: "white",marginBottom: .5}}>
+
+                        <Text style = {{fontFamily: 'Montserrat-Medium.ttf'}}>
+                            {date.toDateString()}
+                        </Text>
+                    </View>
                     <ScrollView style = {styles.notesScrollView}>
-                    <Text style={[styles.modalText, {alignSelf: 'center'}]}>Notes</Text>
+                    <Text style={[styles.modalText, {alignSelf: 'center',}]}>Notes</Text>
                             <TextInput 
                             style={[styles.modalText, {flexGrow: 1, height: "100%", paddingBottom: 20 }]} 
                             multiline={true}
@@ -100,15 +120,16 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
                                     style={styles.eventCreationBox}>
                                     <View style = {{flex: 8, borderColor: "lightgrey", borderWidth: 2, borderRadius: 11, marginRight: 3}}>
                                         <TextInput
-                                            value={localEvents[eventId].details.toString() }
-                                            onChangeText={text => handleEventChange(eventId, text)}
-                                            style = {{padding: 2}}
+                                            value={tempText[eventId] || localEvents[eventId].details.toString()}
+                                            onChangeText={text => handleTempTextChange(eventId, text)}
+                                            onBlur={() => handleEventChange(eventId)}
+                                            style = {{padding: 2, fontFamily: 'Montserrat-Medium.ttf'}}
                                             
                                             />
                                     </View>
                                     
-                                    <Pressable title = "X"
-                                        style = {{flex: 1, backgroundColor: 'red', borderRadius: 11, alignSelf: 'center', padding: 2, paddingLeft: 1}}
+                                    <Pressable title = "del"
+                                        style = {{flex: 1, backgroundColor: 'red', borderRadius: 11, alignSelf: 'center', padding: 2, paddingLeft: 1, fontFamily: 'Montserrat-Medium.ttf'}}
                                         onPress = {() => { 
                                             deleteEvent(eventId);
                                         }}>

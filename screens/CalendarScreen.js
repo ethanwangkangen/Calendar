@@ -6,6 +6,7 @@ import styles from '../Styles.js';
 import {monthNumberToName, getDaysInMonth, getPreviousMonth, getNextMonth } from '../Utils.js';
 import UserContext from '../UserContext.js';
 import DetailsScreen from './DetailsScreen.js';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CalendarScreen = ({route}) => {
   const {month, year} = route.params;
@@ -47,7 +48,7 @@ const CalendarScreen = ({route}) => {
 
   return (
     
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', 
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', 
     width: screenWidth, height: "100%"}}>
             
       <ScrollView
@@ -71,7 +72,7 @@ const CalendarScreen = ({route}) => {
       </ScrollView>
         
       
-    </View>
+    </SafeAreaView>
   );
 };
 
