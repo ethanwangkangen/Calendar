@@ -7,13 +7,13 @@ import {formatDate, monthNumberToName, getDaysInMonth, getDayOfWeek } from '../U
 import UserContext from '../UserContext.js';
 import {getNotes, getEvents} from '../firebaseConfig.js';
 import EventModal from '../components/EventModal.js';
-
+import {auth} from '../firebaseConfig.js';
 
 // CalendarScreen shows detailsScreen. Swiping shows the next month's detailsScreen
 const DetailsScreen = ({month, year}) => {
   const scrollViewRef = useRef(null);
   const { userState } = useContext(UserContext);
-  const { user, email } = userState;
+  const user = auth.currentUser;
 
   const [notes, setNotes] = useState({}); // State to store notes
   const [events, setEvents] = useState({});

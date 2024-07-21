@@ -3,7 +3,7 @@ import { View, ScrollView, Text, StyleSheet, Modal, TouchableOpacity, Platform, 
 import styles from '../Styles.js';
 import EventCreateBox from './EventCreateBox.js';
 import {parseTimes, formatDetails} from '../chrono.js';
-
+import {auth} from '../firebaseConfig.js';
 // Modal that pops up when clicking on a dayBox.
 // This constitutes the whole screen, even the top transparent portion
 

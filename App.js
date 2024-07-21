@@ -17,7 +17,7 @@ const App = () => {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [initialRoute, setInitialRoute] = useState(null); // State to manage initial route
+  const [initialRoute, setInitialRoute] = useState('Signup/Login'); // State to manage initial route
 
 
   const checkAuthStatus = () => {
@@ -27,7 +27,9 @@ const App = () => {
       } else {
         setInitialRoute('Signup/Login');
       }
+      setIsReady(true);
     });
+    
   };
 
   const loadFonts = async () => {
@@ -60,14 +62,20 @@ const App = () => {
     checkAuthStatus();
   }, []);
 
+  const [isReady, setIsReady] = useState(false); // State to track when auth and fonts are ready
+
+
+  if (!fontsLoaded || !isReady) {
+    return null; // or a loading indicator
+  }
+
   return (
     <UserProvider>
       <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home"
+      <Stack.Navigator initialRouteName={initialRoute}
       screenOptions={{
         headerShown: false,
       }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Calendar" component={CalendarScreen}
           initialParams={{month: currentMonth, year: currentYear }
         } />

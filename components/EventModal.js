@@ -8,13 +8,14 @@ import {addEvent} from '../firebaseConfig.js';
 import {formatDate} from '../Utils.js';
 import RecurringEventCreateBox from './RecurringEventCreateBox.js';
 import HelpModal from './HelpModal.js';
+import {auth} from '../firebaseConfig.js';
 
 // Modal that pops up when clicking on a dayBox.
 // This constitutes the whole screen, even the top transparent portion
 
 const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
     const { userState } = useContext(UserContext);
-    const { user, email } = userState;
+    const user = auth.currentUser;
     const [confirmedText, setConfirmedText] = useState('');
 
     const handleEvent = (eventDetails) => {

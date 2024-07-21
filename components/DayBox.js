@@ -6,14 +6,14 @@ import UserContext from '../UserContext.js';
 import {updateNotes, addEvent, updateAllEvents} from '../firebaseConfig.js';
 import {formatDate} from '../Utils.js';
 import {parseTimes, formatDetails} from '../chrono.js';
-
+import {auth} from '../firebaseConfig.js';
 
 // The small day box that shows date, M for monday, and summary of the notes and events.
 // Used in detailsScreen
 
 const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday }) => {
   const { userState } = useContext(UserContext);
-  const { user, email } = userState;
+  const user = auth.currentUser;
 
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModalVisibility = () => {
