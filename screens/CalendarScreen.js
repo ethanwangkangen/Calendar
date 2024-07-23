@@ -64,7 +64,7 @@ const CalendarScreen = ({route}) => {
           <DetailsScreen month={prevMonth} year={prevYear} resetVerticalScroll={setResetVerticalScroll}/>
         </View>
         <View style={{ width: screenWidth }}>
-          <DetailsScreen month={currentMonth} year={currentYear} resetVerticalScroll={setResetVerticalScroll}/>
+          <DetailsScreen month={currentMonth} year={currentYear} resetVerticalScroll={setResetVerticalScroll} setMonth = {setCurrentMonth} setYear = {setCurrentYear}/>
         </View>
         <View style={{ width: screenWidth }}>
           <DetailsScreen month={nextMonth} year={nextYear} resetVerticalScroll={setResetVerticalScroll}/>

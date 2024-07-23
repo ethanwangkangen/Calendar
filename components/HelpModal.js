@@ -30,12 +30,13 @@ const HelpModal = ({visible, onRequestClose}) => {
                   </Text>
                   <Text style ={{fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'flex-start'}}> 
                     Single event:{'\n'}
+                    &#8226; go shopping {'\n'}
                     &#8226; tmr 1pm lunch {'\n'}
                     &#8226; mon 3-5pm class {'\n'}
                     &#8226; next week 11pm movie {'\n'}
+                    &#8226; 24 jul 3pm jog {'\n'}
                     &#8226; this fri test {'\n'} {'\n'} 
                     * [date] and [time (if applicable)] should be together {'\n'}
-                    * at least one of date or time must be specified. {'\n'} 
                     * if no date, assumed to be today. {'\n'} 
                   </Text>
                   <Text style ={{fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'flex-start'}}> 

@@ -3,7 +3,7 @@ import { View, ScrollView, Text, StyleSheet, TextInput, Button, Pressable } from
 import styles from '../Styles.js';
 
 // Box to CREATE event
-const EventCreateBox = ({handleEventCreation, isFocused}) => {
+const EventCreateBox = ({text, handleEventCreation, isFocused}) => {
   const [eventDetails, setEventDetails] = useState('');
 
   return (
@@ -11,7 +11,7 @@ const EventCreateBox = ({handleEventCreation, isFocused}) => {
       <View style = {{flex: 8, borderColor: "black", borderWidth: 2, borderRadius: 11, marginRight: 3}}>
         <TextInput value={eventDetails} 
                   onChangeText={setEventDetails}
-                  placeholder="eg.1-2pm lunch"
+                  placeholder={text}
                   placeholderTextColor="#888"
                   style = {{padding: 2, fontFamily: 'Montserrat-Medium.ttf'}}
                   autoFocus = {isFocused}

@@ -7,6 +7,8 @@ import DetailsScreen from './screens/DetailsScreen.js';
 import LoginScreen from './screens/LoginScreen.js';
 import CalendarScreen from './screens/CalendarScreen.js';
 import ExitModal from './components/ExitModal.js';
+import SignupScreen from './screens/SignupScreen.js';
+import ResetPasswordScreen from './screens/ResetPasswordScreen.js'
 import {UserProvider} from './UserContext.js';
 import * as Font from 'expo-font';
 import { auth } from './firebaseConfig.js'; 
@@ -18,7 +20,7 @@ const App = () => {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [initialRoute, setInitialRoute] = useState('Signup/Login'); // State to manage initial route
+  const [initialRoute, setInitialRoute] = useState('Login'); // State to manage initial route
 
 
   const checkAuthStatus = () => {
@@ -26,7 +28,7 @@ const App = () => {
       if (user) {
         setInitialRoute('Calendar');
       } else {
-        setInitialRoute('Signup/Login');
+        setInitialRoute('Login');
       }
       setIsReady(true);
     });
@@ -80,8 +82,10 @@ const App = () => {
         <Stack.Screen name="Calendar" component={CalendarScreen}
           initialParams={{month: currentMonth, year: currentYear }
         } />
-        <Stack.Screen name = "Signup/Login" component = {LoginScreen} />
+        <Stack.Screen name = "Login" component = {LoginScreen} />
         <Stack.Screen name = "Exit" component = {ExitModal} />
+        <Stack.Screen name = "Signup" component = {SignupScreen} />
+        <Stack.Screen name = "Reset" component = {ResetPasswordScreen} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

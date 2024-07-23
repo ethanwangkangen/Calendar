@@ -41,7 +41,7 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
   const handleEventCreation = async (eventDetails) => {
     try {
       let arr = parseTimes(eventDetails);
-      addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); //placeholder time
+      addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); 
       updateEvents();
     } catch (error) {
       console.log(error);

@@ -2,16 +2,17 @@ import React, {useState, useContext} from 'react';
 import { View, Text, Button , TextInput, TouchableOpacity} from 'react-native';
 import styles from '../Styles.js';
 
-import { initializeAuth, getReactNativePersistence, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { initializeAuth, getReactNativePersistence, getAuth, createUserWithEmailAndPassword, sendEmailVerification ,signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebaseConfig.js'; // Adjust the import path according to your project structure
 
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../UserContext.js';
 import {getErrorMessage} from '../Utils.js';
 
-const LoginScreen = ({navigation}) => {
+const SignupScreen = ({navigation}) => {
     const [email, setEmail] = useState();
     const [password, setPassword ] = useState();
+    const [passwordConfirm, setPasswordConfirm] = useState();
     const { userState, setUserState } = useContext(UserContext);
 
     const handleLogin = (user, email) => {
@@ -20,23 +21,43 @@ const LoginScreen = ({navigation}) => {
 
     const [errorMessage, setErrorMessage] = useState('');
 
-    
+    const signUp = () => {
+        if (password != passwordConfirm) {
+            setErrorMessage("Passwords do not match");
+            return;
+        }
+        createUserWithEmailAndPassword(auth, email, password)
+        .then(async (userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            // Send verification email
+            await sendEmailVerification(user);
+            await handleLogin(user, email);
+            checkEmailVerified();
 
-    const login = () => {
-        signInWithEmailAndPassword(auth, email, password)
-                    .then(async (userCredential) => {
-                        // Signed in 
-                        const user = userCredential.user;
-                        await handleLogin(user, email);
-                        navigation.navigate('Calendar');
-                        // ...
-                    })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        setErrorMessage(getErrorMessage(errorCode));
-                    })
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrorMessage(getErrorMessage(errorCode));
+        })
     }
+
+    const checkEmailVerified = async () => {
+        const user = auth.currentUser;
+      
+        if (user) {
+          await user.reload(); // Refresh user data
+          if (user.emailVerified) {
+            setErrorMessage('Email is verified.');
+            navigation.navigate('Calendar');
+          } else {
+            setErrorMessage('Verify your email and proceed to login');
+          }
+        }
+      };
+      
+
 
     return (
         <View style = {styles.loginPage}>
@@ -60,6 +81,16 @@ const LoginScreen = ({navigation}) => {
                 </TextInput>
             </View>
 
+            <View style = {styles.emailBox}>
+                <TextInput value={passwordConfirm} 
+                    onChangeText={setPasswordConfirm}
+                    placeholder="Confirm password:"
+                    placeholderTextColor="#888"
+                    secureTextEntry={true}
+                    style = {{width: "100%", fontFamily: 'Montserrat-Medium.ttf'}}>
+                </TextInput>
+            </View>
+
             <View style = {{width: "100%", alignSelf: "center", padding: 5}}>
                 <Text style = {{fontFamily: 'Montserrat-Medium.ttf', alignSelf: "center"}} multiline = {true}>
                     {errorMessage}
@@ -77,20 +108,15 @@ const LoginScreen = ({navigation}) => {
                     borderColor: "black",
                     borderWidth: 1,
                     }}
-                onPress={login}
+                onPress={signUp}
             >
-                <Text style={{ fontSize: 15, color: 'black', fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'center' }}>Login</Text>
+                <Text style={{ fontSize: 15, color: 'black', fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'center' }}>Signup</Text>
             </TouchableOpacity>
 
 
             <Button
-            title="No account? Sign up"
-            onPress={() => navigation.navigate('Signup')}
-                />
-            
-            <Button
-            title="Reset Password"
-            onPress={() => navigation.navigate('Reset')}
+            title="Have an account? Login"
+            onPress={() => navigation.navigate('Login')}
                 />
 
             
@@ -102,4 +128,4 @@ const LoginScreen = ({navigation}) => {
 
 
 
-export default LoginScreen;
+export default SignupScreen;

@@ -9,9 +9,11 @@ import {getNotes, getEvents} from '../firebaseConfig.js';
 import EventModal from '../components/EventModal.js';
 import ExitModal from '../components/ExitModal.js';
 import { auth } from '../firebaseConfig.js'; 
+import { Picker, DatePicker } from 'react-native-wheel-pick';
+import { set } from 'firebase/database';
 
 // CalendarScreen shows detailsScreen. Swiping shows the next month's detailsScreen
-const DetailsScreen = ({month, year, userProp}) => {
+const DetailsScreen = ({month, year, setMonth, setYear}) => {
   const scrollViewRef = useRef(null);
   const [notes, setNotes] = useState({}); // State to store notes
   const [events, setEvents] = useState({});
@@ -50,16 +52,16 @@ const DetailsScreen = ({month, year, userProp}) => {
   const currentMonth = currentDate.getMonth();
   const currentDay = currentDate.getDate();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (month === currentMonth && scrollViewRef.current && !firstRendered) {
-        scrollViewRef.current.scrollTo({ y: (currentDay / 3) * 60, animated: false });
-        setFirstRendered(true);
-      }
-    }, 100); // Delay to ensure layout is rendered
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (month === currentMonth && scrollViewRef.current && !firstRendered) {
+  //       scrollViewRef.current.scrollTo({ y: (currentDay / 3) * 60, animated: false });
+  //       setFirstRendered(true);
+  //     }
+  //   }, 100); // Delay to ensure layout is rendered
   
-    return () => clearTimeout(timer);
-  }, []);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   useEffect(() => {
     // Reset y pos of vertical scroll to the top.
@@ -129,7 +131,11 @@ const DetailsScreen = ({month, year, userProp}) => {
 
       <EventModal visible = {eventModalVisible} onRequestClose = {toggleModalVisibility} refreshEvents = {fetchEvents}></EventModal>
       <ExitModal visible = {quitModalVisible}  onRequestClose = {toggleQuitModalVisibility}></ExitModal>
-      <MonthBox month = {monthName}></MonthBox>
+
+      
+      <MonthBox monthName = {monthName} setMonth = {setMonth} setYear = {setYear}></MonthBox>
+
+
       <ScrollView ref={scrollViewRef} style= {styles.monthScrollView}>
       
         <View style = {styles.grid}>
@@ -145,8 +151,10 @@ const DetailsScreen = ({month, year, userProp}) => {
           ))}
         </View>
 
-
       </ScrollView>
+
+      
+
       </View>
 
   );

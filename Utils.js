@@ -76,4 +76,62 @@ export const monthNameToNumber = (monthName) => {
     return `${year}-${month}-${day}`;
   }
 
+  export function getErrorMessage (errorCode) {
+    switch (errorCode) {
+        case 'auth/weak-password':
+            return 'Password is too weak.';
+        case 'auth/email-already-in-use':
+            return 'Email address is already in use.';
+        case 'auth/invalid-email':
+            return 'Invalid email.';
+        case 'auth/user-not-found':
+            return 'No user found with this email address.';
+        case 'auth/wrong-password':
+            return 'Incorrect password.';
+        case 'auth/invalid-credential':
+            return 'Wrong password or email';
+        case 'auth/network-request-failed':
+            return 'Network error.';
+        case 'auth/operation-not-allowed':
+            return 'This operation is not allowed.';
+        case 'auth/too-many-requests':
+            return 'Too many requests. Please try again later.';
+        case 'auth/expired-action-code':
+            return 'The action code has expired.';
+        case 'auth/invalid-action-code':
+            return 'The action code is invalid.';
+        case 'auth/account-exists-with-different-credential':
+            return 'Wrong credentials.';
+        case 'auth/cancelled-popup-request':
+            return 'Popup was cancelled by the user.';
+        case 'auth/credential-already-in-use':
+            return 'The credential is already associated with a different user account.';
+        case 'auth/custom-token-mismatch':
+            return 'The custom token is invalid or has expired.';
+        case 'auth/invalid-custom-token':
+            return 'The custom token format is incorrect.';
+        case 'auth/invalid-provider':
+            return 'The provider is not valid or supported.';
+        case 'auth/missing-android-pkg-name':
+            return 'You need to specify the Android package name.';
+        case 'auth/missing-continue-uri':
+            return 'You need to specify the continue URL.';
+        case 'auth/missing-ios-bundle-id':
+            return 'You need to specify the iOS bundle ID.';
+        case 'auth/unauthorized-continue-uri':
+            return 'The continue URL is not authorized.';
+        case 'auth/user-disabled':
+            return 'This user has been disabled.';
+        case 'auth/user-token-expired':
+            return 'The user’s token has expired.';
+        case 'auth/invalid-email-verified':
+            return 'The email address is not verified.';
+        case 'auth/no-email':
+            return 'No email address was provided.';
+        case 'auth/unsupported-email':
+            return 'Email address format is not supported.';
+        default:
+            return 'An unexpected error occurred. Please try again.';
+    }
+};
   

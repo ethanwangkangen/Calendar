@@ -20,20 +20,34 @@ const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
 
     const handleEvent = (eventDetails) => {
         let arr = parseSingleEvent(eventDetails);
+        //[eventDescription, date, startTime, endTime]
         console.log(arr);
         try{
-          addEvent(user.uid, formatDate(arr[1]), arr[0], arr[2] || null, arr[3] || null)
-            //userId, date, eventDetails, timeStart, timeEnd
-            const text = "Created event: \"" + arr[0] + "\" on " + 
-              (arr[1].toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })) + " "
-            if (arr[3]) {
-              setConfirmedText(text + convertTo12HourFormat(arr[2]) + "-" + convertTo12HourFormat(arr[3]));
-            } else if (arr[2]) {
-              setConfirmedText(text + convertTo12HourFormat(arr[2]));
-            } else {
-              setConfirmedText(text);
-            }
-            
+          if (!arr[1]) {
+            addEvent(user.uid, formatDate(new Date()), arr[0], null, null);
+            setConfirmedText("Created event: \"" + arr[0] + "\" today");
+          } else {
+            date = formatDate(arr[1]);
+            details = arr[0];
+            timeStart = arr[2] || null;
+            timeEnd = arr[3] || null;
+            addEvent(user.uid, date, details, timeStart, timeEnd)
+              //userId, date, eventDetails, timeStart, timeEnd
+              const text = "Created event: \"" + arr[0] + "\" on " + 
+                ((arr[1].toDateString() === new Date().toDateString()) ? 
+                "today" : 
+                arr[1].toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })) 
+                + " ";
+              if (arr[3]) {
+                setConfirmedText(text + convertTo12HourFormat(arr[2]) + "-" + convertTo12HourFormat(arr[3]));
+              } else if (arr[2]) {
+                setConfirmedText(text + convertTo12HourFormat(arr[2]));
+              } else {
+                setConfirmedText(text);
+              }
+
+          }
+                    
         refreshEvents();
         } catch (error) {
           console.log(error);
@@ -102,7 +116,7 @@ const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
             <View style={[styles.modalContent, {borderColor: "black", borderWidth: 2, alignItems: "center"}]}>
                 <View style = {{height: "2%"}}></View>
                 <Text style = {{fontFamily: 'Montserrat-Medium.ttf'}}>Create a single event:</Text>
-                <EventCreateBox isFocused = {true} handleEventCreation={handleEvent}/>
+                <EventCreateBox text = {"eg.tmr 1-2pm lunch"}isFocused = {true} handleEventCreation={handleEvent}/>
                 <Text style = {{fontFamily: 'Montserrat-Medium.ttf'}}>Create a recurring event:</Text>
                 <RecurringEventCreateBox isFocused = {false} handleEventCreation={handleRecurring}/>
                 <Text style = {{fontFamily: 'Montserrat-Medium.ttf'}}>{confirmedText}</Text>

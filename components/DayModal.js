@@ -143,7 +143,7 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
                             null
                          )}     
 
-                        <EventCreateBox handleEventCreation = {handleEventCreation} isFocused = {false}></EventCreateBox>              
+                        <EventCreateBox text = "eg.1-2pm lunch" handleEventCreation = {handleEventCreation} isFocused = {false}></EventCreateBox>              
 
                     </ScrollView>
                 

@@ -16,7 +16,7 @@ const HomeScreen = ({ navigation }) => {
       />
       <Button
         title="Go to Login"
-        onPress={() => navigation.navigate('Signup/Login')}
+        onPress={() => navigation.navigate('Login')}
       />
 
     </View>

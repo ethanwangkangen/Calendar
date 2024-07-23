@@ -1,12 +1,25 @@
-import React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import { View, Text } from 'react-native';
 import styles from '../Styles.js';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import PickerModal from './PickerModal.js';
 
-// Box that displays the Month, eg "July". Used in detailsScreen
-const MonthBox = ({ month }) => {
+const MonthBox = ({monthName, setMonth, setYear }) => {
+  const [pickerVisible, setPickerVisible] = useState(false);
+
+  const togglePickerVisible = () => {
+    setPickerVisible(!pickerVisible);
+  };
+
   return (
-    <View style = {styles.monthBox}>
-      <Text style = {{fontSize: 30, fontFamily: 'Montserrat-Bold.ttf'}}>{month}</Text>
+    <View>
+      <TouchableOpacity onPress={togglePickerVisible}>
+        <View style={styles.monthBox}>
+          <Text style={{fontSize: 30, fontFamily: 'Montserrat-Bold.ttf'}}>{monthName}</Text>
+        </View>
+      </TouchableOpacity>
+
+      <PickerModal visible={pickerVisible} onRequestClose={togglePickerVisible} setMonth = {setMonth} setYear = {setYear}/>
     </View>
   );
 };

@@ -1,49 +1,84 @@
-import React, { useState } from 'react'
-import Background from '../components/Background'
-import BackButton from '../components/BackButton'
-import Logo from '../components/Logo'
-import Header from '../components/Header'
-import TextInput from '../components/TextInput'
-import Button from '../components/Button'
-import { emailValidator } from '../helpers/emailValidator'
+import React, {useState, useContext} from 'react';
+import { View, Text, Button , TextInput, TouchableOpacity} from 'react-native';
+import styles from '../Styles.js';
 
-export default function ResetPasswordScreen({ navigation }) {
-  const [email, setEmail] = useState({ value: '', error: '' })
+import { auth } from '../firebaseConfig.js'; // Adjust the import path according to your project structure
+import { sendPasswordResetEmail, sendEmailVerification ,signInWithEmailAndPassword } from "firebase/auth";
 
-  const sendResetPasswordEmail = () => {
-    const emailError = emailValidator(email.value)
-    if (emailError) {
-      setEmail({ ...email, error: emailError })
-      return
-    }
-    navigation.navigate('LoginScreen')
-  }
+import UserContext from '../UserContext.js';
+import {getErrorMessage} from '../Utils.js';
 
-  return (
-    <Background>
-      <BackButton goBack={navigation.goBack} />
-      <Logo />
-      <Header>Restore Password</Header>
-      <TextInput
-        label="E-mail address"
-        returnKeyType="done"
-        value={email.value}
-        onChangeText={(text) => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-        description="You will receive email with password reset link."
-      />
-      <Button
-        mode="contained"
-        onPress={sendResetPasswordEmail}
-        style={{ marginTop: 16 }}
-      >
-        Send Instructions
-      </Button>
-    </Background>
-  )
-}
+const ResetPasswordScreen = ({navigation}) => {
+    const [email, setEmail] = useState();
+    const { userState, setUserState } = useContext(UserContext);
+
+
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const sendReset = async (email) => {
+        try {
+            //console.log(auth);
+          await sendPasswordResetEmail(auth, email);
+          setErrorMessage('Password reset email sent to ' + email +".");
+        } catch (error) {
+            setErrorMessage(getErrorMessage(error.message));
+        }
+      };
+      
+
+
+    return (
+        <View style = {styles.loginPage}>
+            <View>
+                <Text style = {{width: "100%", fontFamily: 'Montserrat-Medium.ttf'}}>
+                    Enter email to reset password.
+                </Text>
+            </View>
+
+            <View style = {styles.emailBox}>
+                <TextInput value={email} 
+                    onChangeText={setEmail}
+                    placeholder="Email:"
+                    placeholderTextColor="#888"
+                    style = {{width: "100%", fontFamily: 'Montserrat-Medium.ttf'}}>
+                </TextInput>
+            </View>
+
+            <View style = {{width: "100%", alignSelf: "center", padding: 5}}>
+                <Text style = {{fontFamily: 'Montserrat-Medium.ttf', alignSelf: "center"}} multiline = {true}>
+                    {errorMessage}
+                </Text>
+            </View>
+
+            <TouchableOpacity
+                style={{
+                    backgroundColor: 'gainsboro',
+                    padding: 3,
+                    width: "40%",
+                    margin: 5,
+                    borderRadius: 8,
+                    zIndex: 2,
+                    borderColor: "black",
+                    borderWidth: 1,
+                    }}
+                onPress={() => sendReset(email)}
+            >
+                <Text style={{ fontSize: 15, color: 'black', fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'center' }}>Reset password</Text>
+            </TouchableOpacity>
+
+
+            <Button
+            title="Have an account? Login"
+            onPress={() => navigation.navigate('Login')}
+                />
+
+            
+
+
+        </View>
+    );
+};
+
+
+
+export default ResetPasswordScreen;

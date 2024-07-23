@@ -1,33 +1,41 @@
 {
   "expo": {
-    "name": "testApp",
-    "slug": "testApp",
+    "name": "LazyCal",
+    "slug": "LazyCal",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/cal.jpg",
     "userInterfaceStyle": "light",
     "assetBundlePatterns": [
       "assets/fonts/*"
     ],
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/cal.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.ethanwang.LazyCal",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ethanwang.LazyCal"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f774651a-3c2b-447a-93e8-e6e487b95ea5"
+      }
+    }
   }
 }
