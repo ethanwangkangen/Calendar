@@ -16,8 +16,8 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.ethanwang.LazyCal",
-      "buildNumber": "1.0.0"
+      "bundleIdentifier": "com.ethanwang.LazyCalFinal",
+      "buildNumber": "1.0.2"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +30,15 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {

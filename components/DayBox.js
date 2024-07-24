@@ -70,15 +70,26 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
   let EXTRA = 0;
 
   const truncateNotes = (no, maxNewlines) => {
-      if (no == null) return '';
-      const lines = no.split('\n');
-      if (lines.length > maxNewlines) {
-        return lines.slice(0, maxNewlines).join('\n') + ' ...';
-      } else {
-        EXTRA = 3 - lines.length;
-      }
-      return no;
-  };
+    if (no == null) return '';
+    
+    // Split the input text by newlines
+    const lines = no.split('\n');
+
+    // Truncate each line to a maximum of 20 characters
+    const truncatedLines = lines.map(line => {
+        if (line.length > 20) {
+            return line.substring(0, 20) + '...';
+        }
+        return line;
+    });
+
+    // If there are more lines than the maximum allowed, truncate the number of lines
+    if (truncatedLines.length > maxNewlines) {
+        return truncatedLines.slice(0, maxNewlines).join('\n') + ' ...';
+    } else {
+        return truncatedLines.join('\n');
+    }
+};
 
   const truncateEvent = (input) => {
     max = 18

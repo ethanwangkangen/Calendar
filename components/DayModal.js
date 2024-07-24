@@ -37,6 +37,7 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
       };
 
     const handleEventChange = (eventId, text) => {
+        console.log(tempText[eventId]);
         const arr = parseTimes(tempText[eventId]);
         setLocalEvents(prevEvents => {
           const updatedEvents = {
@@ -65,6 +66,14 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
         if (nativeEvent.key === 'Enter') {
             setLocalNotes(localNotes + '\n'); // Append newline character to the text
         }
+      };
+
+      const handlePress = eventId => {
+        console.log("temp Text: " + tempText[eventId]);
+        setTempText(prevTempText => ({
+          ...prevTempText,
+          [eventId]: localEvents[eventId].details.toString()
+        }));
       };
     
 
@@ -119,13 +128,17 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
                                 <View key={eventId} 
                                     style={styles.eventCreationBox}>
                                     <View style = {{flex: 8, borderColor: "lightgrey", borderWidth: 2, borderRadius: 11, marginRight: 3}}>
+
                                         <TextInput
                                             value={tempText[eventId] || localEvents[eventId].details.toString()}
                                             onChangeText={text => handleTempTextChange(eventId, text)}
                                             onBlur={() => handleEventChange(eventId)}
+                                            onFocus={() => handlePress(eventId)}
                                             style = {{padding: 2, fontFamily: 'Montserrat-Medium.ttf'}}
                                             
                                             />
+
+                                        
                                     </View>
                                     
                                     <Pressable title = "del"

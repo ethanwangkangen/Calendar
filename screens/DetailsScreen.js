@@ -71,7 +71,7 @@ const DetailsScreen = ({month, year, setMonth, setYear}) => {
     fetchNotes();
     fetchEvents();
     console.log("month", month, monthNumberToName(month))
-  }, [month, year]); // Listens out for changes in month/year
+  }, [month, year, user]); // Listens out for changes in month/year
   
   const monthName = monthNumberToName(month);
 
