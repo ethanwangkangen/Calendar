@@ -5,7 +5,7 @@ import MonthBox from  '../components/MonthBox.js';
 import styles from '../Styles.js';
 import {formatDate, monthNumberToName, getDaysInMonth, getDayOfWeek } from '../Utils.js';
 import UserContext from '../UserContext.js';
-import {getNotes, getEvents} from '../firebaseConfig.js';
+import {getNotes, getEvents, getLocalEvents, getLocalNotes} from '../firebaseConfig.js';
 import EventModal from '../components/EventModal.js';
 import ExitModal from '../components/ExitModal.js';
 import { auth } from '../firebaseConfig.js'; 
@@ -19,7 +19,7 @@ const DetailsScreen = ({month, year, setMonth, setYear}) => {
   const [events, setEvents] = useState({});
   // events, as retrieved from firebase, is an object. key = eventId, value = event
 
-  const user = auth.currentUser;
+  const user = auth.currentUser; // if not signed in, evaluates to null
   const [firstRendered, setFirstRendered] = useState(false);
 
   const fetchEvents = async () => {
@@ -28,7 +28,9 @@ const DetailsScreen = ({month, year, setMonth, setYear}) => {
 
     for (const dayNum of dayNums) {
       const date = formatDate(new Date(year, month, dayNum));
-      const dayEvents = await getEvents(user.uid, date);
+      //const dayEvents = await getEvents(user.uid, date);
+      const dayEvents = await getLocalEvents(date);
+      getLocalEvents
       eventsData[date] = dayEvents;
     }
     setEvents(eventsData);
@@ -40,7 +42,8 @@ const DetailsScreen = ({month, year, setMonth, setYear}) => {
 
     for (const dayNum of dayNums) {
       const date = formatDate(new Date(year, month, dayNum));
-      const dayNotes = await getNotes(user.uid, date);
+      //const dayNotes = await getNotes(user.uid, date);
+      const dayNotes = await getLocalNotes(user.uid, date);
       notesData[date] = dayNotes;
     }
 

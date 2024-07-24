@@ -3,7 +3,7 @@ import { View, ScrollView, Text, StyleSheet,  TouchableOpacity} from 'react-nati
 import styles from '../Styles.js';
 import DayModal from './DayModal.js';
 import UserContext from '../UserContext.js';
-import {updateNotes, addEvent, updateAllEvents} from '../firebaseConfig.js';
+import {updateNotes, addEvent, updateAllEvents, addEventLocal, updateLocalNotes, updateAllLocalEvents} from '../firebaseConfig.js';
 import {formatDate} from '../Utils.js';
 import {parseTimes, formatDetails} from '../chrono.js';
 import {auth} from '../firebaseConfig.js';
@@ -24,7 +24,8 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
   const handleNotesChange = (newNotes) => {
     if (newNotes != null) {
       setLocalNotes(newNotes); // local
-      updateNotes(user.uid, formatDate(date), newNotes); // firebase
+      //updateNotes(user.uid, formatDate(date), newNotes); // firebase
+      updateLocalNotes(formatDate(date), newNotes);
     }
   };
 
@@ -34,14 +35,16 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
     if (newEvents != null) {
       setLocalEvents(newEvents); // local
       //update firebase events
-      updateAllEvents(user.uid, formatDate(date), newEvents);
+      //updateAllEvents(user.uid, formatDate(date), newEvents);
+      updateAllLocalEvents(formatDate(date), newEvents);
     }
   };
 
   const handleEventCreation = async (eventDetails) => {
     try {
       let arr = parseTimes(eventDetails);
-      addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); 
+      addEventLocal(formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null)
+      //addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); 
       updateEvents();
     } catch (error) {
       console.log(error);

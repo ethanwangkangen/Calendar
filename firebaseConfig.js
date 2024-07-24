@@ -26,18 +26,59 @@ const database = getDatabase(app);
 
 export { app, auth, database };
 
-export function addUser(userId) {
-  set(ref(database, 'users/' + userId), {
-    calendar: {}
-  });
+
+// to do:
+// each function now should directly interact with local database only.
+// logging in (not previously using this acc): reset local database, pull everything from firebase
+// logging in/come online (previously on this acc): push everything to firebase.
+// signing out: push eveyrthing to firebsae
+
+// Function to get all calendar data from AsyncStorage
+export async function getAllCalendarData() {
+  try {
+    const calendarDataString = await AsyncStorage.getItem('calendar');
+    return calendarDataString ? JSON.parse(calendarDataString) : {};
+  } catch (error) {
+    console.error('Error retrieving calendar data:', error);
+    throw error;
+  }
 }
 
-export function addDay(userId, date) {
-  set(ref(database, `users/${userId}/calendar/${date}`), {
-    events: {},
-    notes: ""
-  });
+export async function updateCalendarData(calendarData) {
+  try {
+    await AsyncStorage.setItem('calendar', JSON.stringify(calendarData));
+    console.log('Calendar data updated successfully.');
+  } catch (error) {
+    console.error('Error updating calendar data:', error);
+    throw error;
+  }
 }
+
+const generateEventId = () => {
+  
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 1000); // Adjust range as needed
+    return `${timestamp}-${randomNum}`;
+  
+}
+ 
+export async function addEventLocal(date, eventDetails, timeStart, timeEnd) {
+  const calendarData = await getAllCalendarData();
+  if (!calendarData[date]) {
+    calendarData[date] = { events: {}, notes: '' };
+  }
+
+  const eventId = generateEventId(eventDetails); //todo
+  const eventData = {id: eventId, event: eventDetails, timeStart, timeEnd}
+  
+  calendarData[date].events[eventId] = {
+    details: eventDetails,
+    timeStart: timeStart,
+    timeEnd: timeEnd
+  };
+  await updateCalendarData(calendarData);
+}
+
 
 // eventId automatically generated.
 // .push() creates a new child under 'events' node and generates unique key for it which is stored in 'eventRef'
@@ -57,6 +98,34 @@ export function addEvent(userId, date, eventDetails, timeStart, timeEnd) {
   };
 
   return set(newEventRef, eventData);
+}
+
+export async function getLocalEvents(date) {
+  const calendarData = await getAllCalendarData();
+  // Check if the date exists in calendar data
+  if (!calendarData[date] || !calendarData[date].events) {
+    return {};
+  }
+  const events = calendarData[date].events; 
+  // Convert events object to array and sort
+  const eventsArray = Object.entries(events).map(([id, event]) => ({ id, ...event }));
+
+      // Separate events with and without startTime
+      const eventsWithStartTime = eventsArray.filter(event => event.timeStart);
+      const eventsWithoutStartTime = eventsArray.filter(event => !event.timeStart);
+
+      // Client-side sorting of events with startTime (since Firebase returns them sorted by startTime)
+      eventsWithStartTime.sort((a, b) => new Date(a.timeStart) - new Date(b.timeStart));
+
+      // Combine sorted events with and without startTime
+      const sortedEventsArray = [...eventsWithStartTime, ...eventsWithoutStartTime];
+
+      // Convert sorted array back into an object with event IDs as keys
+      const sortedEvents = Object.fromEntries(
+        sortedEventsArray.map(event => [event.id, event])
+      );
+      return sortedEvents;
+
 }
 
 // Returns an object with eventIDs as keys and event details as values
@@ -93,21 +162,24 @@ export async function getEvents(userId, date) {
   });
 }
 
-export const deleteEvent = (userId, date, eventId) => {
-  return database.ref(`calendars/${userId}/${date}/${eventId}`).remove();
-};
+export async function updateAllLocalEvents(date, events) {
+  const calendarData = await getAllCalendarData();
+  if (!calendarData[date]) {
+    calendarData[date] = { events: {}, notes: '' };
+  }
+  // Preserve existing notes while updating events
+  const updatedData = {
+    ...calendarData[date],
+    events: events
+  };
 
-export const updateEvent = (userId, date, eventId, updatedEvent) => {
-  return database.ref(`calendars/${userId}/${date}/${eventId}`).update(updatedEvent);
-};
-
-
-export function updateNotes(userId, date, notes) {
-  update(ref(database, `users/${userId}/calendar/${date}`), {
-    notes: notes
-  });
+  calendarData[date] = updatedData;
+  
+  await updateCalendarData(calendarData);
+  
 }
 
+// sets all events for that date to events (argument)
 export function updateAllEvents(userId, date, events) {
   return set(ref(database, `users/${userId}/calendar/${date}/events`), events)
     .then(() => {
@@ -117,6 +189,20 @@ export function updateAllEvents(userId, date, events) {
     });
 }
 
+
+export async function getLocalNotes(date) {
+  const calendarData = await getAllCalendarData();
+  // Check if the date exists in calendar data
+  if (!calendarData[date] || !calendarData[date].events) {
+    return {};
+  }
+  // Check if notes exist for the specified date
+  if (calendarData[date] && calendarData[date].notes) {
+    return calendarData[date].notes;
+  } else {
+    return ''; // Return empty string if notes don't exist
+  }
+}
 
 export async function getNotes(userId, date) {
   const dbRef = ref(database);
@@ -132,14 +218,27 @@ export async function getNotes(userId, date) {
   });
 }
 
-export function readUserData(userId) {
-  const dbRef = ref(database);
-  get(child(dbRef, `users/${userId}`)).then((snapshot) => {
-    if (snapshot.exists()) {
-    } else {
-      console.log("No data available");
-    }
-  }).catch((error) => {
-    console.error(error);
+export async function updateLocalNotes(date, notes) {
+  // Retrieve all calendar data
+  const calendarData = await getAllCalendarData();
+
+  if (!calendarData[date]) {
+    calendarData[date] = { events: {}, notes: '' };
+  }
+
+  // Update notes for the specified date
+  calendarData[date] = {
+    ...calendarData[date],
+    notes: notes
+  };
+
+  // Update calendar data in AsyncStorage
+  await updateCalendarData(calendarData);
+}
+
+export function updateNotes(userId, date, notes) {
+  update(ref(database, `users/${userId}/calendar/${date}`), {
+    notes: notes
   });
 }
+
