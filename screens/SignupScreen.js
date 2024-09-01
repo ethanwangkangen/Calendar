@@ -3,7 +3,7 @@ import { View, Text, Button , TextInput, TouchableOpacity} from 'react-native';
 import styles from '../Styles.js';
 
 import { initializeAuth, getReactNativePersistence, getAuth, createUserWithEmailAndPassword, sendEmailVerification ,signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../firebaseConfig.js'; // Adjust the import path according to your project structure
+import { auth, pushLocalDataToFirebase, setCurrentUserId } from '../firebaseConfig.js'; // Adjust the import path according to your project structure
 
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import UserContext from '../UserContext.js';
@@ -15,8 +15,10 @@ const SignupScreen = ({navigation}) => {
     const [passwordConfirm, setPasswordConfirm] = useState();
     const { userState, setUserState } = useContext(UserContext);
 
-    const handleLogin = (user, email) => {
+    const handleSignup = (user, email) => {
         setUserState({ user: user, email: email });
+        setCurrentUserId(user.uid);
+        pushLocalDataToFirebase();
     };
 
     const [errorMessage, setErrorMessage] = useState('');
@@ -32,7 +34,7 @@ const SignupScreen = ({navigation}) => {
             const user = userCredential.user;
             // Send verification email
             await sendEmailVerification(user);
-            await handleLogin(user, email);
+            await handleSignup(user, email);
             checkEmailVerified();
 
         })

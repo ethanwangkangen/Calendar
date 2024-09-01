@@ -4,7 +4,7 @@ import styles from '../Styles.js';
 import EventCreateBox from './EventCreateBox.js';
 import { parseRecurringEvents, parseSingleEvent, getTimeArr, extractRecurrenceDay, convertTo12HourFormat } from '../chrono.js';
 import UserContext from '../UserContext.js';
-import {addEvent} from '../firebaseConfig.js';
+import {pushLocalDataToFirebase} from '../firebaseConfig.js';
 import {formatDate} from '../Utils.js';
 import BigHelpModal from './BigHelpModal.js';
 import RecurringEventCreateBox from './RecurringEventCreateBox.js';
@@ -13,18 +13,24 @@ import { useNavigation } from '@react-navigation/native';
 
 
 const ExitModal = ({visible, onRequestClose}) => {
+    const { userState } = useContext(UserContext);
+    const user = auth.currentUser; // If logged, out, user == null;
     const navigation = useNavigation();
+
+    const isLoggedOut = () => {
+        return (user==null);
+    }
+
     const logout = async () => {
         onRequestClose();
+        await pushLocalDataToFirebase();
         await auth.signOut();
         navigation.navigate('Login');       
     }
 
     const [helpVisible, setHelpVisible] = useState(false)
     const toggleHelpVisible = () => {
-      console.log("help toggle");
       setHelpVisible(!helpVisible);
-      console.log(helpVisible);
     };
 
     return (
@@ -41,7 +47,23 @@ const ExitModal = ({visible, onRequestClose}) => {
             </TouchableWithoutFeedback>
 
             <View style = {[styles.modalContent, {borderColor: "black", borderWidth: 2, borderRadius: 9, padding: 15, paddingTop: -5}]}>
-            <TouchableOpacity
+            
+            {/* {isLoggedOut() ? (<TouchableOpacity
+                style={{
+                marginTop: 30,
+                backgroundColor: 'gainsboro',
+                padding: 9,
+                borderRadius: 8,
+                zIndex: 2,
+                borderColor: "black",
+                borderWidth: 1,
+                }}
+                onPress={(() => {onRequestClose(); navigation.navigate('Signup');  })}
+                
+            >
+                <Text style={{ fontSize: 20, color: 'black', fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'center' }}>Create account</Text>
+
+            </TouchableOpacity>): (<TouchableOpacity
                 style={{
                 marginTop: 30,
                 backgroundColor: 'gainsboro',
@@ -53,8 +75,9 @@ const ExitModal = ({visible, onRequestClose}) => {
                 }}
                 onPress={logout}
             >
-                <Text style={{ fontSize: 20, color: 'black', fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'center' }}>  Logout  </Text>
-            </TouchableOpacity>
+                <Text style={{ fontSize: 20, color: 'black', fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'center' }}>Logout</Text>
+            </TouchableOpacity>)} */}
+            
 
             <TouchableOpacity
                 style={{
@@ -69,7 +92,7 @@ const ExitModal = ({visible, onRequestClose}) => {
                 onPress={toggleHelpVisible}
             >
                 <Text style={{ fontSize: 20, color: 'black', fontFamily: 'Montserrat-Medium.ttf', alignSelf: 'center' }}>  Help  </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> 
 
             <BigHelpModal visible = {helpVisible} onRequestClose={toggleHelpVisible}></BigHelpModal>
                 

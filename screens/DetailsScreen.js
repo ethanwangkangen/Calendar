@@ -30,7 +30,6 @@ const DetailsScreen = ({month, year, setMonth, setYear}) => {
       const date = formatDate(new Date(year, month, dayNum));
       //const dayEvents = await getEvents(user.uid, date);
       const dayEvents = await getLocalEvents(date);
-      getLocalEvents
       eventsData[date] = dayEvents;
     }
     setEvents(eventsData);
@@ -43,7 +42,7 @@ const DetailsScreen = ({month, year, setMonth, setYear}) => {
     for (const dayNum of dayNums) {
       const date = formatDate(new Date(year, month, dayNum));
       //const dayNotes = await getNotes(user.uid, date);
-      const dayNotes = await getLocalNotes(user.uid, date);
+      const dayNotes = await getLocalNotes(date);
       notesData[date] = dayNotes;
     }
 
@@ -73,7 +72,6 @@ const DetailsScreen = ({month, year, setMonth, setYear}) => {
         }
     fetchNotes();
     fetchEvents();
-    console.log("month", month, monthNumberToName(month))
   }, [month, year, user]); // Listens out for changes in month/year
   
   const monthName = monthNumberToName(month);

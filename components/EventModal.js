@@ -4,7 +4,7 @@ import styles from '../Styles.js';
 import EventCreateBox from './EventCreateBox.js';
 import { parseRecurringEvents, parseSingleEvent, getTimeArr, extractRecurrenceDay, convertTo12HourFormat } from '../chrono.js';
 import UserContext from '../UserContext.js';
-import {addEvent} from '../firebaseConfig.js';
+import {addEvent, addEventLocal} from '../firebaseConfig.js';
 import {formatDate} from '../Utils.js';
 import RecurringEventCreateBox from './RecurringEventCreateBox.js';
 import HelpModal from './HelpModal.js';
@@ -18,20 +18,19 @@ const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
     const user = auth.currentUser;
     const [confirmedText, setConfirmedText] = useState('');
 
-    const handleEvent = (eventDetails) => {
+    const handleEvent = async (eventDetails) => {
         let arr = parseSingleEvent(eventDetails);
         //[eventDescription, date, startTime, endTime]
-        console.log(arr);
         try{
           if (!arr[1]) {
-            addEvent(user.uid, formatDate(new Date()), arr[0], null, null);
+            await addEventLocal(formatDate(new Date()), arr[0], null, null);
             setConfirmedText("Created event: \"" + arr[0] + "\" today");
           } else {
             date = formatDate(arr[1]);
             details = arr[0];
             timeStart = arr[2] || null;
             timeEnd = arr[3] || null;
-            addEvent(user.uid, date, details, timeStart, timeEnd)
+            await addEventLocal(date, details, timeStart, timeEnd)
               //userId, date, eventDetails, timeStart, timeEnd
               const text = "Created event: \"" + arr[0] + "\" on " + 
                 ((arr[1].toDateString() === new Date().toDateString()) ? 
@@ -50,23 +49,25 @@ const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
                     
         refreshEvents();
         } catch (error) {
-          console.log(error);
           setConfirmedText("Error, follow the format given.");
         }
             
         
     } 
 
+    async function addEventsToDates(dateArr, eventArr) {
+      for (const date of dateArr) {
+        await addEventLocal(formatDate(date), eventArr[0], eventArr[2] || null, eventArr[3] || null);
+      } //must do one by one so updating is done properly.
+    }
+
     const handleRecurring = (timeWindow, eventDetails) => { //21 jul to 2 aug every sat, 1-3pm class
       try {
         let timeArray = getTimeArr(timeWindow); //21 jul to 2 aug every sat -> [21 jul, 2 aug]
         let day = extractRecurrenceDay(timeWindow); //21 jul to 2 aug every sat -> Saturday
-        let dateArr = parseRecurringEvents(timeArray, day);
-        console.log(timeArray);
-        console.log(day);
-        console.log(dateArr);
+        let dateArr = parseRecurringEvents(timeArray, day); //[date1, date2...]
         let eventArr = parseSingleEvent(eventDetails);
-        dateArr.map(date => addEvent(user.uid, formatDate(date), eventArr[0], eventArr[2] ||null, eventArr[3] ||null));
+        addEventsToDates(dateArr, eventArr);
 
         const text = "Created recurring event every " + day + ": \"" + eventArr[0] + "\" from " + 
               (timeArray[0].toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })) + " to " +
@@ -81,7 +82,6 @@ const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
 
         refreshEvents();
       } catch (error) {
-        console.log(error);
         setConfirmedText("Error, follow the format given.");
       }
       
@@ -94,9 +94,7 @@ const EventModal = ({ visible, onRequestClose, refreshEvents }) => {
 
     const [helpVisible, setHelpVisible] = useState(false)
     const toggleHelpVisible = () => {
-      console.log("help toggle");
       setHelpVisible(!helpVisible);
-      console.log(helpVisible);
     };
 
     return (

@@ -17,7 +17,6 @@ const ResetPasswordScreen = ({navigation}) => {
 
     const sendReset = async (email) => {
         try {
-            //console.log(auth);
           await sendPasswordResetEmail(auth, email);
           setErrorMessage('Password reset email sent to ' + email +".");
         } catch (error) {

@@ -7,6 +7,7 @@ import {updateNotes, addEvent, updateAllEvents, addEventLocal, updateLocalNotes,
 import {formatDate} from '../Utils.js';
 import {parseTimes, formatDetails} from '../chrono.js';
 import {auth} from '../firebaseConfig.js';
+import { signOut } from 'firebase/auth';
 
 // The small day box that shows date, M for monday, and summary of the notes and events.
 // Used in detailsScreen
@@ -21,35 +22,53 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
   };
 
   const [localNotes, setLocalNotes] = useState('');
-  const handleNotesChange = (newNotes) => {
+  const handleNotesChange = async (newNotes) => {
     if (newNotes != null) {
       setLocalNotes(newNotes); // local
       //updateNotes(user.uid, formatDate(date), newNotes); // firebase
-      updateLocalNotes(formatDate(date), newNotes);
+      
+      await updateLocalNotes(formatDate(date), newNotes);
     }
   };
 
   const [localEvents, setLocalEvents] = useState({});
   // localEvents, as well as events (received from DetailsScreen), is an object with k-v pair: k = eventId, v = event
-  const handleEventsChange = (newEvents) => {
+  const handleEventsChange = async (newEvents) => {
+    
     if (newEvents != null) {
       setLocalEvents(newEvents); // local
       //update firebase events
       //updateAllEvents(user.uid, formatDate(date), newEvents);
-      updateAllLocalEvents(formatDate(date), newEvents);
+      await updateAllLocalEvents(formatDate(date), newEvents);
     }
   };
 
   const handleEventCreation = async (eventDetails) => {
     try {
       let arr = parseTimes(eventDetails);
-      addEventLocal(formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null)
+      
+      await addEventLocal(formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null)
       //addEvent(user.uid, formatDate(date), formatDetails(eventDetails), arr[0] || null, arr[1] ||null); 
       updateEvents();
     } catch (error) {
-      console.log(error);
     }
     
+  };
+
+  const handleSave = async (newNotes, newEvents) => {
+    if (newNotes != null) {
+      setLocalNotes(newNotes); // local
+      //updateNotes(user.uid, formatDate(date), newNotes); // firebase
+      
+      await updateLocalNotes(formatDate(date), newNotes);
+    }
+
+    if (newEvents != null) {
+      setLocalEvents(newEvents); // local
+      //update firebase events
+      //updateAllEvents(user.uid, formatDate(date), newEvents);
+      await updateAllLocalEvents(formatDate(date), newEvents);
+    }
   };
 
   useEffect(() => {
@@ -146,9 +165,10 @@ const DayBox = ({ dayNum, dayOfWeek, notes, events, date, updateEvents, isToday 
           date = {date}
           notes = {notes}
           events = {events}
-          onNotesChange={handleNotesChange} // Pass the handler to the modal
-          onEventsChange = {handleEventsChange}
           handleEventCreation = {handleEventCreation}
+          handleSaveDayBox = {handleSave}
+          onNotesChange = {handleNotesChange}
+          onEventsChange = {handleEventsChange}
         />
 
     </TouchableOpacity >

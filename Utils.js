@@ -52,7 +52,7 @@ export const monthNameToNumber = (monthName) => {
   }
 
   export const getDaysInMonth = (year, month) => {
-    return new Date(year, month, 0).getDate();
+    return new Date(year, month+1, 0).getDate();
   };
 
   export const getPreviousMonth = (month, year) => {

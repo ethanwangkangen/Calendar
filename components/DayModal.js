@@ -7,7 +7,7 @@ import {auth} from '../firebaseConfig.js';
 // Modal that pops up when clicking on a dayBox.
 // This constitutes the whole screen, even the top transparent portion
 
-const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEventsChange, handleEventCreation, date }) => {
+const DayModal = ({notes, events, visible, onRequestClose, onEventsChange, handleEventCreation, date, handleSaveDayBox }) => {
     
     const [localNotes, setLocalNotes] = useState(notes);
     const [localEvents, setLocalEvents] = useState(events);
@@ -24,8 +24,9 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
     
 
     const handleSave = () => {
-        onNotesChange(localNotes); // Pass the updated notes back to the parent (which is DayBox)
-        onEventsChange(localEvents);
+        handleSaveDayBox(localNotes, localEvents);
+        // onNotesChange(localNotes); // Pass the updated notes back to the parent (which is DayBox)
+        // onEventsChange(localEvents);
         onRequestClose();
       };
 
@@ -37,7 +38,6 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
       };
 
     const handleEventChange = (eventId, text) => {
-        console.log(tempText[eventId]);
         const arr = parseTimes(tempText[eventId]);
         setLocalEvents(prevEvents => {
           const updatedEvents = {
@@ -69,7 +69,6 @@ const DayModal = ({notes, events, visible, onRequestClose, onNotesChange, onEven
       };
 
       const handlePress = eventId => {
-        console.log("temp Text: " + tempText[eventId]);
         setTempText(prevTempText => ({
           ...prevTempText,
           [eventId]: localEvents[eventId].details.toString()

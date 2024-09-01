@@ -20,20 +20,20 @@ const App = () => {
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const [initialRoute, setInitialRoute] = useState('Login'); // State to manage initial route
+  const [initialRoute, setInitialRoute] = useState('Calendar'); // State to manage initial route
 
 
-  const checkAuthStatus = () => {
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        setInitialRoute('Calendar');
-      } else {
-        setInitialRoute('Login');
-      }
-      setIsReady(true);
-    });
+  // const checkAuthStatus = () => {
+  //   auth.onAuthStateChanged(user => {
+  //     if (user) {
+  //       setInitialRoute('Calendar');
+  //     } else {
+  //       setInitialRoute('Login');
+  //     }
+  //     setIsReady(true);
+  //   });
     
-  };
+  // };
 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -62,13 +62,13 @@ const App = () => {
 
   useEffect(() => {
     loadFonts();
-    checkAuthStatus();
+    // checkAuthStatus();
   }, []);
 
   const [isReady, setIsReady] = useState(false); // State to track when auth and fonts are ready
 
 
-  if (!fontsLoaded || !isReady) {
+  if (!fontsLoaded) {
     return null; // or a loading indicator
   }
 

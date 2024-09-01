@@ -42,10 +42,8 @@ const createTables = async () => {
         FOREIGN KEY (day_id) REFERENCES days(id)
       );`
     );
-    console.log("done creating tables");
     
   } catch (error) {
-    console.error('Error creating tables:', error);
   }
   
 };

@@ -2,7 +2,7 @@
   "expo": {
     "name": "LazyCal",
     "slug": "LazyCal",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/cal.jpg",
     "userInterfaceStyle": "light",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.ethanwang.LazyCalFinal",
-      "buildNumber": "1.0.2"
+      "buildNumber": "1.0.6"
     },
     "android": {
       "adaptiveIcon": {
@@ -44,6 +44,12 @@
       "eas": {
         "projectId": "f774651a-3c2b-447a-93e8-e6e487b95ea5"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f774651a-3c2b-447a-93e8-e6e487b95ea5"
     }
   }
 }
