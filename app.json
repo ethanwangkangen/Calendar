@@ -2,7 +2,7 @@
   "expo": {
     "name": "LazyCal",
     "slug": "LazyCal",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/cal.jpg",
     "userInterfaceStyle": "light",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.ethanwang.LazyCalFinal",
-      "buildNumber": "1.0.6"
+      "buildNumber": "1.0.7"
     },
     "android": {
       "adaptiveIcon": {
